@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="java">
+    <CLASSES />
+    <JAVADOC>
+      <root url="file://C:/Program Files/Java/gson-master/gson/docs/javadocs" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="file://C:/Program Files/Java/gson-master/codegen/src/main/java" />
+      <root url="file://C:/Program Files/Java/gson-master/codegen/src/test/java" />
+      <root url="file://C:/Program Files/Java/gson-master/examples/android-proguard-example/src" />
+      <root url="file://C:/Program Files/Java/gson-master/extras/src/main/java" />
+      <root url="file://C:/Program Files/Java/gson-master/extras/src/test/java" />
+      <root url="file://C:/Program Files/Java/gson-master/gson/src/main/java" />
+      <root url="file://C:/Program Files/Java/gson-master/gson/src/main/java-templates" />
+      <root url="file://C:/Program Files/Java/gson-master/gson/src/test/java" />
+      <root url="file://C:/Program Files/Java/gson-master/metrics/src/main/java" />
+      <root url="file://C:/Program Files/Java/gson-master/proto/src/main/java" />
+      <root url="file://C:/Program Files/Java/gson-master/proto/src/test/java" />
+    </SOURCES>
+  </library>
+</component>
