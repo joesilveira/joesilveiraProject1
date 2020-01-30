@@ -16,17 +16,22 @@ public class main {
 
     public static void main(String args[]) {
 
+        int pageNum = 1;
 
-        String url = "https://jobs.github.com/positions.json";
 
         HTTPRequest http = new HTTPRequest();
-        http.makeGetRequest(url);
 
-        int jobsCount = 0;
+        //http.makeGetRequest(url);
 
-        for (int i = 0; i < jobsCount; i++) {
-
+        for (int i = 0; i < 5; i++) {
+            System.out.println("WHILE LOOP" + i);
+            String url = "https://jobs.github.com/positions.json?page=" + pageNum;
+            System.out.println(url);
+            http.makeGetRequest(url);
+            pageNum++;
+            //System.out.println(http.getNumJobsOnPage());
         }
+
 
         http.printResults();
 

@@ -20,8 +20,8 @@ public class ResponseData {
         return this.title;
     }
 
-    //@Override
-    //public String toString(){
-    //   return title;
-    //}
+    @Override
+    public String toString() {
+        return title;
+    }
 }

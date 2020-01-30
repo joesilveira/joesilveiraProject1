@@ -31,6 +31,8 @@ public class HTTPRequest {
     StringBuffer stringBuff = new StringBuffer();
     ArrayList<String> jobsTitleList = new ArrayList<String>();
     int responseCode;
+    int numJobsOnPage;
+    int totalJobs;
     java.lang.String inputLine;
 
 
@@ -48,7 +50,7 @@ public class HTTPRequest {
             var body = response.body();
 
             //Print for testing
-            System.out.println(body);
+            // System.out.println(body);
             //System.out.println("GSON");
 
             //Convert body to gson objects using class
@@ -57,14 +59,15 @@ public class HTTPRequest {
             }.getType();
             ArrayList<ResponseData> jobsList = g.fromJson(body, collectionType);
 
-            int numJobs = 0;
+            numJobsOnPage = 0;
             for (int i = 0; i < jobsList.size(); i++) {
                 jobsTitleList.add(jobsList.get(i).getTitle());
                 //System.out.println(jobsList.get(i).getTitle());
-                numJobs++;
+                numJobsOnPage++;
+                totalJobs++;
             }
-
-            System.out.println("\n" + "Total number of Jobs: " + numJobs);
+            //System.out.println(jobsList.toString());
+            System.out.println("\n" + "Total number of Jobs on page: " + numJobsOnPage);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,6 +79,12 @@ public class HTTPRequest {
         for (int i = 0; i < jobsTitleList.size(); i++) {
             System.out.println(jobsTitleList.get(i));
         }
+
+        System.out.println("Total number of jobs: " + totalJobs);
+    }
+
+    public int getNumJobsOnPage() {
+        return this.numJobsOnPage;
     }
 
 }
