@@ -1,7 +1,13 @@
+/*
+Joe silveira
+
+Class to handle json data
+ */
+
 package Connections;
 
 import java.net.URL;
-import java.util.ArrayList;
+
 
 public class ResponseData {
     String id;
@@ -16,10 +22,17 @@ public class ResponseData {
     String how_to_apply;
     String company_logo;
 
+    /*
+    Getter to get title
+     */
     public String getTitle() {
         return this.title;
     }
 
+    /*
+    **For testing purposes**
+    To String method to print class
+     */
     @Override
     public String toString() {
         return title;
