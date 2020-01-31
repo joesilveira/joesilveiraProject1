@@ -77,12 +77,12 @@ public class HTTPRequest {
             //Call method to add job titles to arrayList
             addTitleToArray();
 
-            System.out.println("\n" + "Total number of Jobs on page: " + numJobsOnPage);
+            //Print the number of jobs on the given page
+            //System.out.println("\n" + "Total number of Jobs on page: " + numJobsOnPage);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /*
@@ -99,6 +99,10 @@ public class HTTPRequest {
         }
     }
 
+    public void closeConnection() {
+
+    }
+
     /*
     **Joe silveira**
     Method to print the total number of jobs there are
@@ -107,7 +111,6 @@ public class HTTPRequest {
         for (int i = 0; i < jobsTitleList.size(); i++) {
             System.out.println(jobsTitleList.get(i));
         }
-        System.out.println("Total number of jobs: " + totalJobs);
     }
 
     /*
@@ -116,6 +119,10 @@ public class HTTPRequest {
      */
     public int getNumJobsOnPage() {
         return this.numJobsOnPage;
+
     }
 
+    public ArrayList<String> getJobsTitleList() {
+        return this.jobsTitleList;
+    }
 }
