@@ -30,8 +30,11 @@ public class FileResource {
 
     BufferedWriter writer;
 
+    //Method to create file using jfilechooser
     public void createFile(String fileName) throws IOException {
         int selected = 1;
+
+        //loop to make sure user selects a directory
         while (selected == 1) {
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileChooser.setDialogTitle("Select File Save Location");
@@ -55,7 +58,10 @@ public class FileResource {
         }
     }
 
+    //Method to write contents of jobs title to file
     public void writeToFile(ArrayList<String> list) throws IOException {
+
+        //Bunch of pretty formatting
         writer = new BufferedWriter(new FileWriter(file, true));
         writer.append("***********************************************************************************");
         writer.newLine();
@@ -63,10 +69,11 @@ public class FileResource {
         writer.newLine();
         writer.append("***********************************************************************************");
         writer.newLine();
-        writer.append("Total Number of Jobs: " + (list.size() + 1));
+        writer.append("Total Number of Jobs: " + (list.size()));
         writer.newLine();
         writer.newLine();
 
+        //loop to write arraylist to file
         for (int i = 0; i < list.size(); i++) {
             writer.append(list.get(i));
             writer.newLine();
@@ -74,8 +81,9 @@ public class FileResource {
         writer.append("***********************************************************************************");
         //System.out.println(file.getAbsolutePath());
         writer.close();
-        JOptionPane.showMessageDialog(null, "All Jobs written to file");
+        JOptionPane.showMessageDialog(null, "All Jobs written to file" + "\n" + "File Location: " + file.getAbsolutePath());
 
+        //Open the file if supported
         if (Desktop.isDesktopSupported()) {
             Desktop.getDesktop().open(file);
         }

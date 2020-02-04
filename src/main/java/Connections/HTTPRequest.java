@@ -10,6 +10,7 @@ package Connections;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -60,6 +61,11 @@ public class HTTPRequest {
             //Handle HTTP Response
             HttpResponse<String> response = null;
             response = client.send(dataRequest, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                JOptionPane.showMessageDialog(null, "No connection");
+                System.exit(0);
+            }
             // System.out.println(response);
             var body = response.body();
 
@@ -82,6 +88,8 @@ public class HTTPRequest {
 
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Connection Error. Please check your connection and run again.");
+            System.exit(0);
         }
     }
 
@@ -97,10 +105,6 @@ public class HTTPRequest {
             numJobsOnPage++;
             totalJobs++;
         }
-    }
-
-    public void closeConnection() {
-
     }
 
     /*
@@ -126,3 +130,4 @@ public class HTTPRequest {
         return this.jobsTitleList;
     }
 }
+
