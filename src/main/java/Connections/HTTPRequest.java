@@ -63,7 +63,7 @@ public class HTTPRequest {
             response = client.send(dataRequest, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
-                JOptionPane.showMessageDialog(null, "No connection");
+                JOptionPane.showMessageDialog(null, "No connection! Try Again!");
                 System.exit(0);
             }
             // System.out.println(response);

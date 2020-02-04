@@ -11,6 +11,7 @@ To change the api or file:
 In the handler class edit the variable 'url' or 'filePath'
 
 **I could not figure out how to add the github actions script to my build.gradle file**
+I was able to add the github actions script
 
 **I also have two tests that I could not figure out how to add to the gradle build file**
 If you run the APItests they work as they should, I just cant figure out how to appropriately add them to 
