@@ -11,11 +11,12 @@ public class APItests {
 
     runtimeHandler handler = new runtimeHandler();
 
+
     //joe silveira
     //Method to test that there are more than 100 jobs
     @Test
     public void runJobNumTest() {
-
+        System.setProperty("java.awt.headless", "true");
         int num = handler.pingAPI();
         //System.out.println(num);
 
@@ -32,7 +33,7 @@ public class APItests {
     //Method to test a string that is in the file
     @Test
     public void runStringTest() throws IOException {
-
+        System.setProperty("java.awt.headless", "true");
         /*
         Depricated for auto testing
          */
