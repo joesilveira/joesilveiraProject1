@@ -4,10 +4,10 @@ Joe Silveira
 Class to handle file i/o
  */
 
-package FileIO;
+package fileIO;
 
 
-import Connections.HTTPRequest;
+import connections.HTTPRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,21 +15,22 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.http.HttpRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class FileResource {
 
     //Class Variables
-    File file;
     String fileDirectory;
-    JFrame frame = new JFrame();
+    File userFile;
+    File programFile;
+
+    //Java class variables
     JFileChooser fileChooser = new JFileChooser();
-    HTTPRequest http;
-
     BufferedWriter writer;
+    JFrame frame = new JFrame();
 
+    //Joe Silveira
     //Method to create file using jfilechooser
     public void createFile(String fileName) throws IOException {
         int selected = 1;
@@ -47,20 +48,29 @@ public class FileResource {
         }
 
         fileDirectory = fileChooser.getSelectedFile().getAbsolutePath();
-        file = new File(fileDirectory + '\\' + fileName);
+        this.userFile = new File(fileDirectory + '\\' + fileName);
 
-        //System.out.println(file);
-
-        if (file.createNewFile()) {
+        if (this.userFile.createNewFile()) {
             //System.out.println("file created");
         } else {
             //System.out.println("File esists");
         }
     }
 
-    //Method to write contents of jobs title to file
-    public void writeToFile(ArrayList<String> list) throws IOException {
+    //Joe Silveira
+    //Method to create file in program for testing purposes
+    public void createProgramFile(String fileName) throws IOException {
+        this.programFile = new File(fileName);
+        if (programFile.createNewFile()) {
+            //System.out.println("file created");
+        } else {
+            //System.out.println("File not created");
+        }
+    }
 
+    //Joe Silveira
+    //Method to write contents of jobs title to file
+    public void writeToFile(ArrayList<String> list, File file) throws IOException {
         //Bunch of pretty formatting
         writer = new BufferedWriter(new FileWriter(file, true));
         writer.append("***********************************************************************************");
@@ -88,5 +98,17 @@ public class FileResource {
             Desktop.getDesktop().open(file);
         }
 
+    }
+
+    //Joe silveira
+    //Method to get user file path
+    public File getUserFilePath() {
+        return this.userFile;
+    }
+
+    //Joe silveira
+    //Method to get program file path
+    public File getProgramFile() {
+        return this.programFile;
     }
 }

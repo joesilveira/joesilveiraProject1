@@ -2,18 +2,21 @@
 
 import org.junit.Assert;
 import org.junit.Test;
+import runner.runtimeHandler;
 
 import javax.swing.*;
 import java.io.*;
 
 public class APItests {
 
-    Handler d = new Handler();
+    runtimeHandler handler = new runtimeHandler();
 
+    //joe silveira
+    //Method to test that there are more than 100 jobs
     @Test
     public void runJobNumTest() {
 
-        int num = d.pingAPI();
+        int num = handler.pingAPI();
         //System.out.println(num);
 
         try {
@@ -25,23 +28,30 @@ public class APItests {
 
     }
 
+    //joe silveira
+    //Method to test a string that is in the file
     @Test
     public void runStringTest() throws IOException {
 
+        /*
+        Depricated for auto testing
+         */
         //Initiliaze file chooser
-        JFileChooser chooser = new JFileChooser();
-        JFrame frame = new JFrame();
-        chooser.showOpenDialog(frame);
-        File file = chooser.getSelectedFile();
-        System.out.println(file);
+//        JFileChooser chooser = new JFileChooser();
+//        JFrame frame = new JFrame();
+//        chooser.showOpenDialog(frame);
+//        File file = chooser.getSelectedFile();
+//        System.out.println(file);
 
+        File file = new File(handler.fileName);
         //Initiliaze file reader
         FileReader fReader = new FileReader(file);
         BufferedReader reader = new BufferedReader(fReader);
 
+        //Depricated for auto testing
+        //String userEntry = JOptionPane.showInputDialog("Please Enter the name of the job to see if it is in the file");
 
-        String userEntry = JOptionPane.showInputDialog("Please Enter the name of the job to see if it is in the file");
-        String checkString = userEntry;
+        String checkString = "Software Developer";
 
 
         String line = "";
@@ -67,7 +77,7 @@ public class APItests {
         //For testing
         try {
             Assert.assertTrue(containsString);
-            System.out.println("The file contains the job: " + userEntry + " that you entered. Test Passed!");
+            System.out.println("The file contains the job: " + checkString + " that you entered. Test Passed!");
         } catch (AssertionError e) {
             System.out.println("The file does not contain the job that you entered. Please check to make sure " +
                     "you entered the job in correctly");

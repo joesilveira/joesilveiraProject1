@@ -6,40 +6,25 @@
     for the program to run
  */
 
-import javax.swing.*;
-import java.awt.*;
+import runner.runtimeHandler;
+
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class main {
 
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, SQLException {
 
-        //Instance Variables
-        JProgressBar progressBar = new JProgressBar();
-        JFrame frame = new JFrame();
-        Handler d = new Handler();
+        runtimeHandler handler = new runtimeHandler();
+        handler.startProgram();
 
-        //Quick message to user
-        JOptionPane.showMessageDialog(null, "Welcome to the Github Jobs Fetcher");
-
-        //Progress bar init
-        progressBar.setStringPainted(true);
-        progressBar.setBorderPainted(true);
-        progressBar.setForeground(Color.green.darker());
-
-        //frame init
-        frame.setSize(500, 200);
-        frame.setTitle("Fetching Jobs...");
-        frame.add(progressBar);
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
-
-        //Make Ping
-        d.pingAPI(progressBar, frame);
-
-        //Show the save
-        d.showSaveDialog();
+        //try db
+        //DBFunctions dbFun = new DBFunctions();
+        //DatabaseHandler dbHandler = new DatabaseHandler();
+        //dbHandler.initDatabase();
+        //dbFun.createTable("jobs","");
+        //dbFun.addColumn("jobs","jobID","int");
 
         //Close program
         System.exit(0);

@@ -4,7 +4,7 @@ Joe silveira
 Class to handle json data
  */
 
-package Connections;
+package json;
 
 import java.net.URL;
 

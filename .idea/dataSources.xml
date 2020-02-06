@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="APIDB.sqlite" uuid="d76d21e4-f750-45ab-8274-a67a3a479ec7">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Joey\Documents\Bridgewater State University\Classes\2020 Spring Semester(this)\Senior Dev\joesilveiraProject1\APIDB.sqlite</jdbc-url>
+    </data-source>
+  </component>
+</project>
