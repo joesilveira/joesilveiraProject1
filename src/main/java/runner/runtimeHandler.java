@@ -17,7 +17,7 @@ public class runtimeHandler {
     File userFile;
     File programFile;
     String api = "https://jobs.github.com/positions.json?page=";
-    public String fileName = "jobsAPI.txt";
+    String fileName = "jobsAPI.txt";
 
     //Java class variables
     JProgressBar progressBar = new JProgressBar();
@@ -41,13 +41,13 @@ public class runtimeHandler {
         pingAPI(progressBar, frame);
 
         //create file in user path
-        //fileIO.createFile(fileName);
+        fileIO.createFile(fileName);
 
         //get the user file adn set the local file
-        //userFile = fileIO.getUserFilePath();
+        userFile = fileIO.getUserFilePath();
 
         //Write to user file
-        //fileIO.writeToFile(http.getJobsTitleList(),userFile);
+        fileIO.writeToFile(http.getJobsTitleList(), userFile);
 
 
         /*
@@ -95,30 +95,5 @@ public class runtimeHandler {
 
         }
     }
-
-//    //Joe Silveira
-//    //Method to ping api and return num of jobs
-//    //For test
-//    public int pingAPI() {
-//
-//        int totalNumJobs = 0;
-//        while (callRequest == 1) {
-//
-//            String url = api + pageNum;
-//
-//            //Make Request
-//            http.makeGetRequest(url);
-//
-//            pageNum++;
-//
-//            if (http.getNumJobsOnPage() < 50) {
-//                callRequest = 0;
-//            }
-//        }
-//
-//        totalNumJobs = http.getJobsTitleList().size();
-//
-//        return totalNumJobs;
-//    }
 
 }
