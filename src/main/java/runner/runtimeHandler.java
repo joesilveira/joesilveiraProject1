@@ -96,29 +96,29 @@ public class runtimeHandler {
         }
     }
 
-    //Joe Silveira
-    //Method to ping api and return num of jobs
-    //For test
-    public int pingAPI() {
-
-        int totalNumJobs = 0;
-        while (callRequest == 1) {
-
-            String url = api + pageNum;
-
-            //Make Request
-            http.makeGetRequest(url);
-
-            pageNum++;
-
-            if (http.getNumJobsOnPage() < 50) {
-                callRequest = 0;
-            }
-        }
-
-        totalNumJobs = http.getJobsTitleList().size();
-
-        return totalNumJobs;
-    }
+//    //Joe Silveira
+//    //Method to ping api and return num of jobs
+//    //For test
+//    public int pingAPI() {
+//
+//        int totalNumJobs = 0;
+//        while (callRequest == 1) {
+//
+//            String url = api + pageNum;
+//
+//            //Make Request
+//            http.makeGetRequest(url);
+//
+//            pageNum++;
+//
+//            if (http.getNumJobsOnPage() < 50) {
+//                callRequest = 0;
+//            }
+//        }
+//
+//        totalNumJobs = http.getJobsTitleList().size();
+//
+//        return totalNumJobs;
+//    }
 
 }
