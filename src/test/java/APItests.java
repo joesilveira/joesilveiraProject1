@@ -22,9 +22,9 @@ public class APItests {
 
         try {
             Assert.assertTrue(num > 100);
-            System.out.println("There are more than 100 jobs! Test passed.");
+            //System.out.println("There are more than 100 jobs! Test passed.");
         } catch (Exception e) {
-            System.out.println("There are less than 100 jobs. Test Failed.");
+            //System.out.println("There are less than 100 jobs. Test Failed.");
         }
 
     }
