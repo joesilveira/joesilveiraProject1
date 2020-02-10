@@ -7,6 +7,7 @@ import testing.testMethods;
 
 import javax.swing.*;
 import java.io.*;
+import java.sql.SQLException;
 
 public class APItests {
 
@@ -101,6 +102,18 @@ public class APItests {
         } catch (AssertionError e) {
             System.out.println("The job name " + jobName + " is not in the database");
             Assert.fail();
+        }
+    }
+
+    @Test
+    public void tableCheck() throws SQLException {
+        String tableName = "Job_Titles";
+        int tableExists = test.checkTable(tableName);
+        try {
+            Assert.assertEquals(1, tableExists);
+            System.out.println("The table " + tableName + " exists in the database");
+        } catch (AssertionError e) {
+            System.out.println("The table " + tableName + " does not exist in the database");
         }
     }
 }

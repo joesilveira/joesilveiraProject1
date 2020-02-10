@@ -73,7 +73,7 @@ public class DBFunctions {
     //Joe Silveira
     //Method to add just job title to database
     public void addTitleToJobsDatabaseTable(String title) throws SQLException {
-        //call databse connection
+        //call database connection
         conn = connectToDatabase();
 
         try {
