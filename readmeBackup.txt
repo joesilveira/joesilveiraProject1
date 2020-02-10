@@ -31,7 +31,7 @@ The runtimeHandler class method "startProgram": does the following:
                             and sql statement.
                             
                             
-    4. Makes the API request from the method "pingAPI"
+
         4.1: The "pingAPI" method calls the "makeGetRequest" method from HTTPRequest adn continues to call the "makeGetRequest"
               method until there are less than 50 jobs on the page
     5. Adds the Job Titles to the database 
