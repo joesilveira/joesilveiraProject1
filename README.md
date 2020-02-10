@@ -33,8 +33,8 @@ The runtimeHandler class method "startProgram" does the following:
         and then creates the table "Job_Titles" adds the column "job_title" in the APIDB database.
         
             3.1.1: The "createTable" method calls the "connecttoDatabase" method from the "DatabaseConnection" Class
-                                    the "createTable" method is a generic method to create any table the database given a tableName and 
-                                    and sql statement.
+                   the "createTable" method is a generic method to create any table the database given a tableName and 
+                   and sql statement.
                                     
 4. Makes the API request from the method "pingAPI" method until there are less than 50 jobs on the page
 
