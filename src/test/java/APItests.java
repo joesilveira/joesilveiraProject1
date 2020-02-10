@@ -16,9 +16,10 @@ public class APItests {
 
     //joe silveira
     //Method to test that there are more than 100 jobs
-//    @Test
-//    public void runJobNumTest() {
-//
+    //Depricated in project 2
+    @Test
+    public void jobNumTest() {
+
 //        int num = test.pingAPI();
 //        //System.out.println(num);
 //
@@ -28,24 +29,25 @@ public class APItests {
 //        } catch (Exception e) {
 //            System.out.println("There are less than 100 jobs. Test Failed.");
 //        }
-//
-//    }
+
+    }
 
     //joe silveira
     //Method to test a string that is in the file
-//    @Test
-//    public void runStringTest() throws IOException {
-//
-//        /*
-//        Depricated for auto testing
-//         */
-//        //Initiliaze file chooser
-////        JFileChooser chooser = new JFileChooser();
-////        JFrame frame = new JFrame();
-////        chooser.showOpenDialog(frame);
-////        File file = chooser.getSelectedFile();
-////        System.out.println(file);
-//
+    //depricated in project 2
+    @Test
+    public void fileStringTest() throws IOException {
+
+        /*
+        Depricated for auto testing
+         */
+        //Initiliaze file chooser
+//        JFileChooser chooser = new JFileChooser();
+//        JFrame frame = new JFrame();
+//        chooser.showOpenDialog(frame);
+//        File file = chooser.getSelectedFile();
+//        System.out.println(file);
+
 //        File file = new File(test.getFileName());
 //        //Initiliaze file reader
 //        FileReader fReader = new FileReader(file);
@@ -77,7 +79,6 @@ public class APItests {
 //
 //        }
 //
-//        //For testing
 //        try {
 //            Assert.assertTrue(containsString);
 //            System.out.println("The file contains the job: " + checkString + " that you entered. Test Passed!");
@@ -86,13 +87,12 @@ public class APItests {
 //                    "you entered the job in correctly");
 //            Assert.fail();
 //        }
-//    }
+    }
 
     //Joe Silveira
     //Method to test that the data was stored properly
-
     @Test
-    public void stringTest() {
+    public void dbStringTest() {
         String jobName = "Site Reliability Engineers";
         int matchTest = test.checkString(jobName);
         try {
@@ -105,8 +105,10 @@ public class APItests {
         }
     }
 
+    //Joe Silveira
+    //Test to check that a given table name exists in the database
     @Test
-    public void tableCheck() throws SQLException {
+    public void dbTableCheck() throws SQLException {
         String tableName = "Job_Titles";
         int tableExists = test.checkTable(tableName);
         try {
