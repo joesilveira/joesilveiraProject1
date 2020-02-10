@@ -1,11 +1,16 @@
 package testing;
 
 import connections.HTTPRequest;
+import dbHandler.DBFunctions;
 import runner.runtimeHandler;
+
+import java.sql.*;
 
 public class testMethods {
 
     HTTPRequest http = new HTTPRequest();
+    DBFunctions dbFunc = new DBFunctions();
+    Connection conn = null;
     String api = "https://jobs.github.com/positions.json?page=";
     String fileName = "jobsAPI.txt";
 
@@ -38,5 +43,26 @@ public class testMethods {
 
     public String getFileName() {
         return this.fileName;
+    }
+
+    //Check String method
+    public int checkString(String jobName) {
+        conn = dbFunc.connectToDatabase();
+        int match = 0;
+        try {
+            String sql = "SELECT job_title FROM Job_Titles";
+            PreparedStatement pStatement = conn.prepareStatement(sql);
+            ResultSet rSet = pStatement.executeQuery();
+
+            while (rSet.next()) {
+                if (rSet.getString("job_title").equals(jobName)) {
+                    match = 1;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return match;
     }
 }

@@ -1,19 +1,19 @@
 package dbHandler;
 
-import connections.DatabaseConnection;
-
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DatabaseHandler {
 
     //Class variables
     DBFunctions dbFunc = new DBFunctions();
-    DatabaseConnection dbConn = new DatabaseConnection();
     Connection conn = null;
+    ArrayList<String> jobTableColumns = new ArrayList<String>();
 
-    //Method to initialize the database
-    public void initDatabase() throws SQLException {
+    //Joe silveira
+    //Method to initialize the database with a table and all job paramters
+    public void initJobsTable() throws SQLException {
 
         //Instantiate Table
         String sql = "jobID string," + "\n" + "jobType string," +
@@ -24,6 +24,30 @@ public class DatabaseHandler {
                 "company_logo string";
 
         dbFunc.createTable("Jobs", sql);
-
     }
+
+    //Joe silveira
+    //Method to initialize the database with a table with just job titles
+    public void initJobsTitleTable() throws SQLException {
+        String sql = "job_title string";
+        dbFunc.createTable("Job_Titles", sql);
+    }
+
+    //Joe Silveira
+    //Method to initialize array list with all job parameters
+    //Not used
+    public void initArrayList() {
+        jobTableColumns.add("jobID");
+        jobTableColumns.add("jobType");
+        jobTableColumns.add("github_URL");
+        jobTableColumns.add("job_Created_TimeStamp");
+        jobTableColumns.add("company");
+        jobTableColumns.add("company_url");
+        jobTableColumns.add("job_location");
+        jobTableColumns.add("job_title");
+        jobTableColumns.add("job_description");
+        jobTableColumns.add("how_to_apply");
+        jobTableColumns.add("company_logo");
+    }
+
 }

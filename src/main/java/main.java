@@ -16,15 +16,9 @@ public class main {
 
     public static void main(String args[]) throws IOException, SQLException {
 
+        //Start program
         runtimeHandler handler = new runtimeHandler();
         handler.startProgram();
-
-        //try db
-        //DBFunctions dbFun = new DBFunctions();
-        //DatabaseHandler dbHandler = new DatabaseHandler();
-        //dbHandler.initDatabase();
-        //dbFun.createTable("jobs","");
-        //dbFun.addColumn("jobs","jobID","int");
 
         //Close program
         System.exit(0);

@@ -1,12 +1,14 @@
 package runner;//joe silveira
 
 import connections.HTTPRequest;
+import dbHandler.DatabaseHandler;
 import fileIO.FileResource;
 import screens.mainScreen;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class runtimeHandler {
 
@@ -27,27 +29,36 @@ public class runtimeHandler {
     HTTPRequest http = new HTTPRequest();
     FileResource fileIO = new FileResource();
     mainScreen screens = new mainScreen();
+    DatabaseHandler dbHandler = new DatabaseHandler();
 
     //Joe silveira
     //Method to run the program with all necessary method calls
-    public void startProgram() throws IOException {
+    public void startProgram() throws IOException, SQLException {
         //Print message
         JOptionPane.showMessageDialog(null, "Welcome to the git hub jobs fetcher");
 
         //Load Progress Bar
         screens.initProgressBar(progressBar, frame);
 
+        //initiliaze database
+        dbHandler.initJobsTitleTable();
+
         //make api request
         pingAPI(progressBar, frame);
 
-        //create file in user path
-        fileIO.createFile(fileName);
+        //add titles to database
+        http.addtoDB();
 
-        //get the user file adn set the local file
-        userFile = fileIO.getUserFilePath();
 
-        //Write to user file
-        fileIO.writeToFile(http.getJobsTitleList(), userFile);
+        //Depricated in project 2
+//        //create file in user path
+//        fileIO.createFile(fileName);
+//
+//        //get the user file adn set the local file
+//        userFile = fileIO.getUserFilePath();
+//
+//        //Write to user file
+//        fileIO.writeToFile(http.getJobsTitleList(), userFile);
 
 
         /*
@@ -58,21 +69,25 @@ public class runtimeHandler {
         //*********File Stuff*******
         //Create local file for test and write the exact same contents of the user file to that file
 
-        //Create file in program
-        fileIO.createProgramFile(fileName);
-
-        //Set the program file path
-        programFile = fileIO.getProgramFile();
-
-        //Write to the program file
-        fileIO.writeToFile(http.getJobsTitleList(), programFile);
+        //Depricated in project 2
+//        //Create file in program
+//        fileIO.createProgramFile(fileName);
+//
+//        //Set the program file path
+//       programFile = fileIO.getProgramFile();
+//
+//        //Write to the program file
+//        fileIO.writeToFile(http.getJobsTitleList(), programFile);
     }
 
     //Joe Silveira
     //Method to ping api with progress bar
     public void pingAPI(JProgressBar progressBar, JFrame frame) {
+
+        //Loop to loop through each page until there are less than 50 jobs on page
         while (callRequest == 1) {
 
+            //Initialize url
             String url = api + pageNum;
 
             //Make Request

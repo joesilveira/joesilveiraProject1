@@ -10,78 +10,96 @@ import java.io.*;
 
 public class APItests {
 
+
     testMethods test = new testMethods();
 
     //joe silveira
     //Method to test that there are more than 100 jobs
-    @Test
-    public void runJobNumTest() {
-
-        int num = test.pingAPI();
-        //System.out.println(num);
-
-        try {
-            Assert.assertTrue(num > 100);
-            System.out.println("There are more than 100 jobs! Test passed.");
-        } catch (Exception e) {
-            System.out.println("There are less than 100 jobs. Test Failed.");
-        }
-
-    }
+//    @Test
+//    public void runJobNumTest() {
+//
+//        int num = test.pingAPI();
+//        //System.out.println(num);
+//
+//        try {
+//            Assert.assertTrue(num > 100);
+//            System.out.println("There are more than 100 jobs! Test passed.");
+//        } catch (Exception e) {
+//            System.out.println("There are less than 100 jobs. Test Failed.");
+//        }
+//
+//    }
 
     //joe silveira
     //Method to test a string that is in the file
+//    @Test
+//    public void runStringTest() throws IOException {
+//
+//        /*
+//        Depricated for auto testing
+//         */
+//        //Initiliaze file chooser
+////        JFileChooser chooser = new JFileChooser();
+////        JFrame frame = new JFrame();
+////        chooser.showOpenDialog(frame);
+////        File file = chooser.getSelectedFile();
+////        System.out.println(file);
+//
+//        File file = new File(test.getFileName());
+//        //Initiliaze file reader
+//        FileReader fReader = new FileReader(file);
+//        BufferedReader reader = new BufferedReader(fReader);
+//
+//        //Depricated for auto testing
+//        //String userEntry = JOptionPane.showInputDialog("Please Enter the name of the job to see if it is in the file");
+//
+//        String checkString = "Software Developer";
+//
+//
+//        String line = "";
+//        int loop = 0;
+//        boolean containsString = true;
+//
+//        while ((line = reader.readLine()) != null && loop == 0) {
+//
+//            //convert both to lower case
+//            line = line.toLowerCase();
+//            checkString = checkString.toLowerCase();
+//
+//            //try comparing
+//            if (line.equals(checkString)) {
+//                loop = 1;
+//                containsString = true;
+//            } else {
+//                containsString = false;
+//            }
+//
+//        }
+//
+//        //For testing
+//        try {
+//            Assert.assertTrue(containsString);
+//            System.out.println("The file contains the job: " + checkString + " that you entered. Test Passed!");
+//        } catch (AssertionError e) {
+//            System.out.println("The file does not contain the job that you entered. Please check to make sure " +
+//                    "you entered the job in correctly");
+//            Assert.fail();
+//        }
+//    }
+
+    //Joe Silveira
+    //Method to test that the data was stored properly
+
     @Test
-    public void runStringTest() throws IOException {
-
-        /*
-        Depricated for auto testing
-         */
-        //Initiliaze file chooser
-//        JFileChooser chooser = new JFileChooser();
-//        JFrame frame = new JFrame();
-//        chooser.showOpenDialog(frame);
-//        File file = chooser.getSelectedFile();
-//        System.out.println(file);
-
-        File file = new File(test.getFileName());
-        //Initiliaze file reader
-        FileReader fReader = new FileReader(file);
-        BufferedReader reader = new BufferedReader(fReader);
-
-        //Depricated for auto testing
-        //String userEntry = JOptionPane.showInputDialog("Please Enter the name of the job to see if it is in the file");
-
-        String checkString = "Software Developer";
-
-
-        String line = "";
-        int loop = 0;
-        boolean containsString = true;
-
-        while ((line = reader.readLine()) != null && loop == 0) {
-
-            //convert both to lower case
-            line = line.toLowerCase();
-            checkString = checkString.toLowerCase();
-
-            //try comparing
-            if (line.equals(checkString)) {
-                loop = 1;
-                containsString = true;
-            } else {
-                containsString = false;
-            }
-
-        }
-
-        //For testing
+    public void stringTest() {
+        String jobName = "Site Reliability Engineers";
+        int matchTest = test.checkString(jobName);
         try {
-            Assert.assertTrue(containsString);
-            System.out.println("The file contains the job: " + checkString + " that you entered. Test Passed!");
+            //System.out.println(matchTest);
+            Assert.assertEquals(1, matchTest);
+            System.out.println("The job name " + jobName + " is in the database");
         } catch (AssertionError e) {
-            System.out.println("The file does not contain the job that you entered. Please check to make sure " +
-                    "you entered the job in correctly");
+            System.out.println("The job name " + jobName + " is not in the database");
             Assert.fail();
         }
     }

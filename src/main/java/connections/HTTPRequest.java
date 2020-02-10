@@ -9,6 +9,7 @@ package connections;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import dbHandler.DBFunctions;
 import json.ResponseData;
 
 import javax.swing.*;
@@ -22,6 +23,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -38,6 +40,8 @@ public class HTTPRequest {
     StringBuffer stringBuff = new StringBuffer();
     ArrayList<String> jobsTitleList = new ArrayList<String>();
     ArrayList<ResponseData> jobsList;
+    ArrayList<String> allJobs = new ArrayList<String>();
+    DBFunctions dbfun = new DBFunctions();
     int numJobsOnPage = 0;
     int totalJobs = 0;
 
@@ -91,6 +95,25 @@ public class HTTPRequest {
         }
     }
 
+    //joe silveira
+    //this method adds each job to an array
+    public void addtoDB() throws SQLException {
+        //Loop to add jobs to database
+        for (int i = 0; i < jobsTitleList.size(); i++) {
+            dbfun.addTitleToJobsDatabaseTable(jobsTitleList.get(i));
+        }
+    }
+
+    //Joe silveira
+    //Method to print the job paramters
+    public void printJob() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(jobsList.get(i).getId() + jobsList.get(i).getType() + jobsList.get(i).getUrl() + jobsList.get(i).getCreated_at() + jobsList.get(i).getCompany()
+                    + jobsList.get(i).getCompany_url() + jobsList.get(i).getLocation() + jobsList.get(i).getTitle());
+
+        }
+    }
+
     //joe Silveira
     //This method takes just the job "title" from the array list of jobs and adds them to the arraylist
     //"jobsTitleList"
@@ -101,6 +124,7 @@ public class HTTPRequest {
             numJobsOnPage++;
             totalJobs++;
         }
+        System.out.println(jobsTitleList.size());
     }
 
     //Joe silveira
