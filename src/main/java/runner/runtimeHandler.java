@@ -46,38 +46,34 @@ public class runtimeHandler {
         //make api request
         pingAPI(progressBar, frame);
 
-        //add titles to database
+        //initalize file in user path
+        fileIO.createFile(fileName);
+
+        //get the user file and set the local file
+        userFile = fileIO.getUserFilePath();
+
+        //Write to user file
+        fileIO.writeToFile(http.getJobsTitleList(), userFile);
+
+        //Write to database
         http.addtoDB();
-
-
-        //Depricated in project 2
-//        //create file in user path
-//        fileIO.createFile(fileName);
-//
-//        //get the user file adn set the local file
-//        userFile = fileIO.getUserFilePath();
-//
-//        //Write to user file
-//        fileIO.writeToFile(http.getJobsTitleList(), userFile);
 
 
         /*
         Methods calls for testing purposes
          */
 
-
         //*********File Stuff*******
         //Create local file for test and write the exact same contents of the user file to that file
 
-        //Depricated in project 2
-//        //Create file in program
-//        fileIO.createProgramFile(fileName);
-//
-//        //Set the program file path
-//       programFile = fileIO.getProgramFile();
-//
-//        //Write to the program file
-//        fileIO.writeToFile(http.getJobsTitleList(), programFile);
+        //Create file in program
+        fileIO.createProgramFile(fileName);
+
+        //Set the program file path
+        programFile = fileIO.getProgramFile();
+
+        //Write to the program file
+        fileIO.writeToFile(http.getJobsTitleList(), programFile);
     }
 
     //Joe Silveira
