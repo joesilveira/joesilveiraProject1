@@ -102,12 +102,14 @@ public class FileResource {
 
     //Joe silveira
     //Method to get user file path
+    //Returns the user file path
     public File getUserFilePath() {
         return this.userFile;
     }
 
     //Joe silveira
     //Method to get program file path
+    //Returns the program file path
     public File getProgramFile() {
         return this.programFile;
     }

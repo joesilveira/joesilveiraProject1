@@ -22,7 +22,7 @@ public class ResponseData {
     String how_to_apply;
     String company_logo;
 
-
+    //Getters for variables
     public String getId() {
         return this.id;
     }
@@ -64,9 +64,9 @@ public class ResponseData {
     }
 
 
-    /*
-    Getter to get title
-     */
+    //Joe Silveira
+    // Method to get job title
+    //Returns job title
     public String getTitle() {
         return this.title;
     }

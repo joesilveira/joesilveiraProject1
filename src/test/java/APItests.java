@@ -8,6 +8,7 @@ import testing.testMethods;
 import javax.swing.*;
 import java.io.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class APItests {
 
@@ -17,8 +18,8 @@ public class APItests {
     //joe silveira
     //Method to test that there are more than 100 jobs
     //Depricated in project 2
-    @Test
-    public void jobNumTest() {
+//    @Test
+//    public void jobNumTest() {
 
 //        int num = test.pingAPI();
 //        //System.out.println(num);
@@ -30,18 +31,18 @@ public class APItests {
 //            System.out.println("There are less than 100 jobs. Test Failed.");
 //        }
 
-    }
+//    }
 
     //joe silveira
     //Method to test a string that is in the file
     //depricated in project 2
-    @Test
-    public void fileStringTest() throws IOException {
+//    @Test
+//    public void fileStringTest() throws IOException {
 
         /*
         Depricated for auto testing
          */
-        //Initiliaze file chooser
+    //Initiliaze file chooser
 //        JFileChooser chooser = new JFileChooser();
 //        JFrame frame = new JFrame();
 //        chooser.showOpenDialog(frame);
@@ -87,12 +88,14 @@ public class APItests {
 //                    "you entered the job in correctly");
 //            Assert.fail();
 //        }
-    }
+//    }
 
     //Joe Silveira
     //Method to test that the data was stored properly
     @Test
     public void dbStringTest() {
+        System.out.println();
+        System.out.println("****Preforming database entry check*****");
         String jobName = "Site Reliability Engineers";
         int matchTest = test.checkString(jobName);
         try {
@@ -109,6 +112,8 @@ public class APItests {
     //Test to check that a given table name exists in the database
     @Test
     public void dbTableCheck() throws SQLException {
+        System.out.println();
+        System.out.println("****Preforming database table check*****");
         String tableName = "Job_Titles";
         int tableExists = test.checkTable(tableName);
         try {
@@ -116,6 +121,50 @@ public class APItests {
             System.out.println("The table " + tableName + " exists in the database");
         } catch (AssertionError e) {
             System.out.println("The table " + tableName + " does not exist in the database");
+        }
+    }
+
+    //Joe Silveira
+    //Test to make sure the function to save to the database works properly
+    @Test
+    public void dbSaveCheck() {
+        System.out.println();
+        System.out.println("****Preforming database table check*****");
+        ArrayList<String> goodStrings = new ArrayList<>();
+        ArrayList<String> badStrings = new ArrayList<>();
+
+
+        //Add good data to good strings
+        goodStrings.add("Joes database");
+        goodStrings.add("New Job");
+        goodStrings.add("My job");
+
+        //Add bad data to bad strings
+        badStrings.add("INSERT INTO");
+        badStrings.add("*");
+        badStrings.add("*)");
+
+
+        //Test good strings
+        for (int i = 0; i < goodStrings.size(); i++) {
+            try {
+                int stringTest1 = test.checkSave(goodStrings.get(i));
+                Assert.assertEquals(1, stringTest1);
+                System.out.println(goodStrings.get(i) + " is a valid entry. Test Passed");
+            } catch (AssertionError e) {
+                Assert.fail(goodStrings.get(i) + " is not a valid entry. Test Failed");
+            }
+        }
+
+        //test bad strings
+        for (int i = 0; i < badStrings.size(); i++) {
+            try {
+                int stringTest2 = test.checkSave(badStrings.get(i));
+                Assert.assertEquals(0, stringTest2);
+                System.out.println(badStrings.get(i) + " is not valid entry but was caught. Test Passed");
+            } catch (AssertionError e) {
+                Assert.fail(badStrings.get(i) + " is not a valid entry but was not caught. Test Failed");
+            }
         }
     }
 }

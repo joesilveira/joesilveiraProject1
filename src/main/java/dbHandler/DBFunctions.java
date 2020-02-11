@@ -5,16 +5,23 @@ import java.sql.*;
 public class DBFunctions {
 
     Connection conn = null;
+
+    public int getValidString() {
+        return validString;
+    }
+
+    int validString = 0;
     String url = "jdbc:sqlite:APIDB.sqlite";
 
 
     //Joe silveira
     //Method to connect to the database
+    //Returns the database connection
     public Connection connectToDatabase() {
         try {
             // create a connection to the database
             conn = DriverManager.getConnection(url);
-            System.out.println("Connection to SQLite has been established.");
+            //System.out.println("Connection to SQLite has been established.");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,14 +83,20 @@ public class DBFunctions {
         //call database connection
         conn = connectToDatabase();
 
-        try {
-            String sqlStatement = "INSERT INTO Job_Titles(job_title) VALUES(?) ";
-            System.out.println(sqlStatement);
-            PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
-            pStatement.setString(1, title);
-            pStatement.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
+        validString = stringCheck(title);
+
+        //if the string is good
+        if (validString == 0) {
+            try {
+                String sqlStatement = "INSERT INTO Job_Titles(job_title) VALUES(?) ";
+                PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
+                pStatement.setString(1, title);
+                pStatement.execute();
+            } catch (Exception e) {
+
+            }
+        } else {
+            validString = 1;
         }
     }
 
@@ -118,5 +131,18 @@ public class DBFunctions {
         }
 
     }
+
+    //Joe Silveira
+    //Method to make sure string does not contain any harmful data
+    //Return 1 if string contains a bad string
+    private int stringCheck(String string) {
+        int contains = 0;
+        if (string.contains("INSERT") || string.contains("INTO") || string.contains("VALUES") || string.contains("?") || string.contains("*")) {
+            contains = 1;
+        }
+        return contains;
+    }
 }
+
+
 

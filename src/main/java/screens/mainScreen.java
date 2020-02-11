@@ -5,6 +5,8 @@ import java.awt.*;
 
 public class mainScreen {
 
+    //Joe Silveira
+    //Initializes a progress bar and jframe parameters
     public void initProgressBar(JProgressBar progressBar, JFrame frame) {
         //Progress bar init
         progressBar.setStringPainted(true);
