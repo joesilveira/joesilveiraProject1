@@ -124,7 +124,6 @@ public class HTTPRequest {
             numJobsOnPage++;
             totalJobs++;
         }
-        System.out.println(jobsTitleList.size());
     }
 
     //Joe silveira

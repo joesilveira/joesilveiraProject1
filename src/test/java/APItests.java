@@ -129,7 +129,7 @@ public class APItests {
     @Test
     public void dbSaveCheck() {
         System.out.println();
-        System.out.println("****Preforming database table check*****");
+        System.out.println("****Preforming database save check*****");
         ArrayList<String> goodStrings = new ArrayList<>();
         ArrayList<String> badStrings = new ArrayList<>();
 
@@ -165,6 +165,21 @@ public class APItests {
             } catch (AssertionError e) {
                 Assert.fail(badStrings.get(i) + " is not a valid entry but was not caught. Test Failed");
             }
+        }
+    }
+
+    //Joe Silveira
+    //Test to make sure the primary key in the table exists and is not null
+    @Test
+    public void primaryKeyCheck() {
+        System.out.println();
+        System.out.println("****Preforming Primary key null value check*****");
+        try {
+            int notNull = test.checkPrimary();
+            Assert.assertEquals(0, notNull);
+            System.out.println("Primary key column 'id' does not contain a null value. Test Passed!");
+        } catch (AssertionError e) {
+            Assert.fail("Primary key column 'id' contains a null value. Test Failed");
         }
     }
 }

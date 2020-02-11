@@ -105,4 +105,28 @@ public class testMethods {
         }
         return saved;
     }
+
+    //joe silveira
+    //Method to make sure the primary key is not null in the table
+    public int checkPrimary() {
+        int valid = 0;
+        conn = dbFunc.connectToDatabase();
+        try {
+            String sql = "SELECT id FROM Job_Titles";
+            PreparedStatement pStatement = conn.prepareStatement(sql);
+            ResultSet rSet = pStatement.executeQuery();
+
+            while (rSet.next()) {
+                if (rSet.getString("id").isEmpty()) {
+                    valid = 1;
+                } else {
+                    valid = 0;
+                }
+            }
+
+        } catch (Exception e) {
+
+        }
+        return valid;
+    }
 }
