@@ -33,7 +33,6 @@ public class APItests {
 
     //joe silveira
     //Method to test a string that is in the file
-
     @Test
     public void fileStringTest() throws IOException {
         System.out.println();
@@ -57,7 +56,7 @@ public class APItests {
 //        //Depricated for auto testing
 //        //String userEntry = JOptionPane.showInputDialog("Please Enter the name of the job to see if it is in the file");
 //
-        String checkString = "Software Developer";
+        String checkString = "  " + "Job Title: " + "Software and Systems Administration Specialist";
 
 
         String line = "";
@@ -71,7 +70,7 @@ public class APItests {
             checkString = checkString.toLowerCase();
 
             //try comparing
-            if (line.equals(checkString)) {
+            if (line.contains(checkString)) {
                 loop = 1;
                 containsString = true;
             } else {
@@ -114,7 +113,7 @@ public class APItests {
     public void dbTableCheck() throws SQLException {
         System.out.println();
         System.out.println("****Preforming database table check*****");
-        String tableName = "Job_Titles";
+        String tableName = "Jobs";
         int tableExists = test.checkTable(tableName);
         try {
             Assert.assertEquals(1, tableExists);
@@ -141,7 +140,7 @@ public class APItests {
 
         //Add bad data to bad strings
         badStrings.add("INSERT INTO");
-        badStrings.add("*");
+        badStrings.add("SELECT * FROM");
         badStrings.add("*)");
 
 

@@ -21,17 +21,11 @@ public class DatabaseHandler {
                 "company string," + "\n" + "company_url string," + "\n" +
                 "job_location string," + "\n" + "job_title string," + "\n" +
                 "job_description string," + "\n" + "how_to_apply string," + "\n" +
-                "company_logo string";
+                "company_logo string," + "\n" + "insertion_Time CURRENT_TIMESTAMP";
 
         dbFunc.createTable("Jobs", sql);
     }
 
-    //Joe silveira
-    //Method to initialize the database with a table with just job titles
-    public void initJobsTitleTable() throws SQLException {
-        String sql = "job_title string";
-        dbFunc.createTable("Job_Titles", sql);
-    }
 
     //Joe Silveira
     //Method to initialize array list with all job parameters
@@ -50,4 +44,12 @@ public class DatabaseHandler {
         jobTableColumns.add("company_logo");
     }
 
+
+    //*************************Depricated Methods*****************
+    // Joe silveira
+    //    //Method to initialize the database with a table with just job titles
+    //    public void initJobsTitleTable() throws SQLException {
+    //        String sql = "job_title string";
+    //        dbFunc.createTable("Job_Titles", sql);
+    //    }
 }

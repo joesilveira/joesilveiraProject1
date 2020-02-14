@@ -6,6 +6,7 @@ import fileIO.FileResource;
 import screens.mainScreen;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ public class runtimeHandler {
     int pageNum = 1;
     int callRequest = 1;
     int numJobs = 0;
+    int openFile = 0;
     File userFile;
     File programFile;
     String api = "https://jobs.github.com/positions.json?page=";
@@ -27,6 +29,7 @@ public class runtimeHandler {
 
     //Program class varialbes
     HTTPRequest http = new HTTPRequest();
+    mainScreen ms = new mainScreen();
     FileResource fileIO = new FileResource();
     mainScreen screens = new mainScreen();
     DatabaseHandler dbHandler = new DatabaseHandler();
@@ -40,8 +43,8 @@ public class runtimeHandler {
         //Load Progress Bar
         screens.initProgressBar(progressBar, frame);
 
-        //initiliaze database
-        dbHandler.initJobsTitleTable();
+        //initaliaze job table
+        dbHandler.initJobsTable();
 
         //make api request
         pingAPI(progressBar, frame);
@@ -53,11 +56,22 @@ public class runtimeHandler {
         userFile = fileIO.getUserFilePath();
 
         //Write to user file
-        fileIO.writeToFile(http.getJobsTitleList(), userFile);
+        fileIO.writeJobsToFile(http.getJobsList(), userFile);
 
-        //Write to database
-        http.addtoDB();
+        //ask to open file
+        openFile = ms.askToOpenFile();
+        if (openFile == 0) {
+            //Open the file if supported
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(fileIO.getUserFilePath());
+            }
+        }
 
+        //write to db
+        http.addJobToDB();
+
+        //show jobs being written to db
+        ms.showJobsWrittenToDB();
 
         /*
         Methods calls for testing purposes
@@ -73,7 +87,7 @@ public class runtimeHandler {
         programFile = fileIO.getProgramFile();
 
         //Write to the program file
-        fileIO.writeToFile(http.getJobsTitleList(), programFile);
+        fileIO.writeJobsToFile(http.getJobsList(), programFile);
     }
 
     //Joe Silveira

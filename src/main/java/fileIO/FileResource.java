@@ -8,6 +8,8 @@ package fileIO;
 
 
 import connections.HTTPRequest;
+import json.ResponseData;
+import screens.mainScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +29,8 @@ public class FileResource {
 
     //Java class variables
     JFileChooser fileChooser = new JFileChooser();
+    HTTPRequest http = new HTTPRequest();
+    mainScreen ms = new mainScreen();
     BufferedWriter writer;
     JFrame frame = new JFrame();
 
@@ -50,10 +54,13 @@ public class FileResource {
         fileDirectory = fileChooser.getSelectedFile().getAbsolutePath();
         this.userFile = new File(fileDirectory + '\\' + fileName);
 
+        if (this.userFile.exists()) {
+            int clear = ms.askToClearFile();
+            if (clear == 0) {
+                userFile.delete();
+            }
+        }
         if (this.userFile.createNewFile()) {
-            //System.out.println("file created");
-        } else {
-            //System.out.println("File esists");
         }
     }
 
@@ -70,35 +77,40 @@ public class FileResource {
 
     //Joe Silveira
     //Method to write contents of jobs title to file
-    public void writeToFile(ArrayList<String> list, File file) throws IOException {
-        //Bunch of pretty formatting
+    public void writeJobsToFile(ArrayList<ResponseData> list, File file) throws IOException {
+
         writer = new BufferedWriter(new FileWriter(file, true));
+
+        //Bunch of pretty formatting
         writer.append("***********************************************************************************");
         writer.newLine();
-        writer.append("Request Date: " + LocalDateTime.now());
+        writer.append("Request Date: ").append(String.valueOf(LocalDateTime.now()));
         writer.newLine();
         writer.append("***********************************************************************************");
         writer.newLine();
-        writer.append("Total Number of Jobs: " + (list.size()));
+        writer.append("Total Number of Jobs: ").append(String.valueOf(list.size()));
         writer.newLine();
         writer.newLine();
 
         //loop to write arraylist to file
         for (int i = 0; i < list.size(); i++) {
-            writer.append(list.get(i));
+            writer.append("Job: ").append(String.valueOf(i + 1));
+            writer.newLine();
+            writer.append(list.get(i).toString());
             writer.newLine();
         }
-        writer.append("***********************************************************************************");
-        //System.out.println(file.getAbsolutePath());
-        writer.close();
-        JOptionPane.showMessageDialog(null, "All Jobs written to file" + "\n" + "File Location: " + file.getAbsolutePath());
 
-        //Open the file if supported
-        if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().open(file);
-        }
+        writer.append("***********************************************************************************");
+        writer.close();
+
+
+//        //Open the file if supported
+//        if (Desktop.isDesktopSupported()) {
+//            Desktop.getDesktop().open(file);
+//        }
 
     }
+
 
     //Joe silveira
     //Method to get user file path

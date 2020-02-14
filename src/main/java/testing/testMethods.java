@@ -36,7 +36,7 @@ public class testMethods {
             }
         }
 
-        totalNumJobs = http.getJobsTitleList().size();
+        totalNumJobs = http.getTotalJobs();
 
         return totalNumJobs;
     }
@@ -55,7 +55,7 @@ public class testMethods {
         conn = dbFunc.connectToDatabase();
         int match = 0;
         try {
-            String sql = "SELECT job_title FROM Job_Titles";
+            String sql = "SELECT job_title FROM Jobs";
             PreparedStatement pStatement = conn.prepareStatement(sql);
             ResultSet rSet = pStatement.executeQuery();
 

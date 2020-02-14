@@ -20,4 +20,18 @@ public class mainScreen {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
+
+    public int askToClearFile() {
+        int clear = JOptionPane.showConfirmDialog(null, "Would you like clear the file before writing the jobs?");
+        return clear;
+    }
+
+    public int askToOpenFile() {
+        int open = JOptionPane.showConfirmDialog(null, "Would you like to open your jobs file?");
+        return open;
+    }
+
+    public void showJobsWrittenToDB() {
+        JOptionPane.showMessageDialog(null, "All Jobs Written to database");
+    }
 }

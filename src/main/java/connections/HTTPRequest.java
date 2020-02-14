@@ -8,40 +8,29 @@ package connections;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dbHandler.DBFunctions;
 import json.ResponseData;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class HTTPRequest {
 
     //Java class variables
-    URL url;
-    HttpURLConnection connection = null;
     HttpClient client;
-    BufferedReader buffRead;
-    InputStreamReader readIn;
 
     //Class Variables
-    StringBuffer stringBuff = new StringBuffer();
-    ArrayList<String> jobsTitleList = new ArrayList<String>();
-    ArrayList<ResponseData> jobsList;
-    ArrayList<String> allJobs = new ArrayList<String>();
-    DBFunctions dbfun = new DBFunctions();
+    ArrayList<ResponseData> responseJobsList;
+    ArrayList<ResponseData> jobsList = new ArrayList<>();
+    DBFunctions dbFun = new DBFunctions();
     int numJobsOnPage = 0;
     int totalJobs = 0;
 
@@ -58,7 +47,7 @@ public class HTTPRequest {
              */
 
             //Instantiate Connection
-            client = (HttpClient) java.net.http.HttpClient.newHttpClient();
+            client = HttpClient.newHttpClient();
             var requestBuilder = HttpRequest.newBuilder();
             var dataRequest = requestBuilder.uri(URI.create(link)).build();
 
@@ -79,58 +68,78 @@ public class HTTPRequest {
             https://stackoverflow.com/questions/9598707/gson-throwing-expected-begin-object-but-was-begin-array
              */
 
-            Gson g = new Gson();
+
+            GsonBuilder builder = new GsonBuilder();
+            builder.serializeNulls();
+            Gson g = builder.create();
+
+
             Type collectionType = new TypeToken<Collection<ResponseData>>() {
             }.getType();
-            jobsList = g.fromJson(body, collectionType);
+            responseJobsList = g.fromJson(body, collectionType);
 
-            //Call method to add job titles to arrayList
-            addTitleToArray();
-
+            countJobs();
+            addJobsToArray();
 
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Connection Error. Please check your connection and run again.");
             System.exit(0);
         }
+
     }
 
-    //joe silveira
-    //this method adds each job to an array
-    public void addtoDB() throws SQLException {
-        //Loop to add jobs to database
-        for (int i = 0; i < jobsTitleList.size(); i++) {
-            dbfun.addTitleToJobsDatabaseTable(jobsTitleList.get(i));
+    //Joe Silveira
+    //this method adds the complete job to the array
+    public void addJobToDB() {
+        for (int i = 0; i < jobsList.size(); i++) {
+            try {
+                dbFun.addJobJobsDatabase(jobsList.get(i).getId(), jobsList.get(i).getType(), jobsList.get(i).getUrl(),
+                        jobsList.get(i).getCreated_at(), jobsList.get(i).getCompany(), jobsList.get(i).getCompany_url(),
+                        jobsList.get(i).getLocation(), jobsList.get(i).getTitle(), jobsList.get(i).getDescription(),
+                        jobsList.get(i).getHow_to_apply(), jobsList.get(i).getCompany_logo());
+            } catch (Exception e) {
+                e.printStackTrace();
+                e.getCause();
+            }
         }
+    }
+
+    //Joe Silveira
+    //Method to add the response jobs list to jobs list
+    private void addJobsToArray() {
+        jobsList.addAll(responseJobsList);
     }
 
     //Joe silveira
     //Method to print the job paramters
     public void printJob() {
-        for (int i = 0; i < 5; i++) {
-            System.out.println(jobsList.get(i).getId() + jobsList.get(i).getType() + jobsList.get(i).getUrl() + jobsList.get(i).getCreated_at() + jobsList.get(i).getCompany()
-                    + jobsList.get(i).getCompany_url() + jobsList.get(i).getLocation() + jobsList.get(i).getTitle());
-
-        }
-    }
-
-    //joe Silveira
-    //This method takes just the job "title" from the array list of jobs and adds them to the arraylist
-    //"jobsTitleList"
-    public void addTitleToArray() {
-        numJobsOnPage = 0;
+        totalJobs = 0;
         for (int i = 0; i < jobsList.size(); i++) {
-            jobsTitleList.add(jobsList.get(i).getTitle());
-            numJobsOnPage++;
+            System.out.println("Job:" + totalJobs + "\n" +
+                    "   " + "Job ID: " + jobsList.get(i).getId() + "\n" +
+                    "   " + "Job Type: " + jobsList.get(i).getType() + "\n" +
+                    "   " + "Github URL: " + jobsList.get(i).getUrl() + "\n" +
+                    "   " + "Created At: " + jobsList.get(i).getCreated_at() + "\n" +
+                    "   " + "Company: " + jobsList.get(i).getCompany() + "\n" +
+                    "   " + "Company URL: " + jobsList.get(i).getCompany_url() + "\n" +
+                    "   " + "Job Location: " + jobsList.get(i).getLocation() + "\n" +
+                    "   " + "Job Title: " + jobsList.get(i).getTitle() + "\n" +
+                    "   " + "Job Description: " + "\n" +
+                    "   " + "How to apply: " + "\n" +
+                    "   " + "Company Logo: " + jobsList.get(i).getCompany_logo() + "\n"
+            );
             totalJobs++;
         }
     }
 
-    //Joe silveira
-    //Method to print the total number of jobs there are
-    public void printResults() {
-        for (int i = 0; i < jobsTitleList.size(); i++) {
-            System.out.println(jobsTitleList.get(i));
+    //Joe Silveira
+    //Method to count the num of jobs and set totalJobs =
+    public void countJobs() {
+        numJobsOnPage = 0;
+        for (int i = 0; i < responseJobsList.size(); i++) {
+            numJobsOnPage++;
+            totalJobs++;
         }
     }
 
@@ -140,10 +149,45 @@ public class HTTPRequest {
         return this.numJobsOnPage;
     }
 
+    public int getTotalJobs() {
+        return this.totalJobs;
+    }
+
+    //Joe silveira
+    //Getter for the jobslist
+    public ArrayList<ResponseData> getJobsList() {
+        return jobsList;
+    }
+
+    //**********************************Depricated Methods and Variables******************
+
+    //ArrayList<String> jobsTitleList = new ArrayList<String>();
+
+    //joe Silveira
+    //This method takes just the job "title" from the array list of jobs and adds them to the arraylist
+    //"jobsTitleList"
+//    public void addTitleToArray() {
+//        numJobsOnPage = 0;
+//        for (int i = 0; i < jobsList.size(); i++) {
+//            jobsTitleList.add(jobsList.get(i).getTitle());
+//            numJobsOnPage++;
+//            totalJobs++;
+//        }
+//    }
+
+    //joe silveira
+    //this method adds each job title to an array
+//    public void addtoDB() throws SQLException {
+////        //Loop to add jobs to database
+////        for (int i = 0; i < jobsTitleList.size(); i++) {
+////            dbfun.addTitleToJobsDatabaseTable(jobsTitleList.get(i));
+////        }
+////    }
+
     //Joe Silveira
     //Method to get jobs title list
-    public ArrayList<String> getJobsTitleList() {
-        return this.jobsTitleList;
-    }
+//    public ArrayList<String> getJobsTitleList() {
+//        return this.jobsTitleList;
+//    }
 }
 

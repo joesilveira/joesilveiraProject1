@@ -1,6 +1,8 @@
 package dbHandler;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class DBFunctions {
 
@@ -103,31 +105,55 @@ public class DBFunctions {
     //Joe silveira
     //Method to add job full parameters to database
     //Not used in project 2
-    public void addRowToJobsDatabase(String jobID, String jobType, String gitHub_Url, String job_Created_TimeStamp, String company, String company_url,
-                                     String job_location, String job_title, String job_description, String how_to_apply, String company_logo) {
+    public void addJobJobsDatabase(String jobID, String jobType, String gitHub_Url, String job_Created_TimeStamp, String company, String company_url,
+                                   String job_location, String job_title, String job_description, String how_to_apply, String company_logo) {
 
 
-        String sql = "INSERT INTO Jobs " + "(jobID,jobType,gitHub_Url,job_Created_TimeStamp,company,company_url,jobLocation," +
-                "job_title,job_description,how_to_apply,company_logo)" + "\n" + "VALUES" +
-                "(" +
-                jobID + "," +
-                jobType + "," +
-                gitHub_Url + "," +
-                job_Created_TimeStamp + "," +
-                company + "," +
-                company_url + "," +
-                job_location + "," +
-                job_title + "," +
-                job_description + ","
-                + how_to_apply + "," +
-                company_logo + ")" +
-                ";";
-        conn = connectToDatabase();
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
+        int allValid = 0;
+
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add(jobID);
+        strings.add(jobType);
+        strings.add(gitHub_Url);
+        strings.add(job_Created_TimeStamp);
+        strings.add(company);
+        strings.add(company_url);
+        strings.add(job_location);
+        strings.add(job_title);
+        strings.add(job_description);
+        strings.add(how_to_apply);
+        strings.add(company_logo);
+
+        for (String string : strings) {
+            if (string != null) {
+                allValid = stringCheck(string);
+            }
+        }
+
+        if (allValid == 0) {
+
+            conn = connectToDatabase();
+
+            try {
+                String sqlStatement = "INSERT INTO Jobs(jobID,jobType,gitHub_Url,job_Created_TimeStamp,company,company_url,job_Location," +
+                        "job_title,job_description,how_to_apply,company_logo,insertion_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+                PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
+                pStatement.setString(1, jobID);
+                pStatement.setString(2, jobType);
+                pStatement.setString(3, gitHub_Url);
+                pStatement.setString(4, job_Created_TimeStamp);
+                pStatement.setString(5, company);
+                pStatement.setString(6, company_url);
+                pStatement.setString(7, job_location);
+                pStatement.setString(8, job_title);
+                pStatement.setString(9, job_description);
+                pStatement.setString(10, how_to_apply);
+                pStatement.setString(11, company_logo);
+                pStatement.setString(12, LocalDateTime.now().toString());
+                pStatement.execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -137,8 +163,13 @@ public class DBFunctions {
     //Return 1 if string contains a bad string
     private int stringCheck(String string) {
         int contains = 0;
-        if (string.contains("INSERT") || string.contains("INTO") || string.contains("VALUES") || string.contains("?") || string.contains("*")) {
-            contains = 1;
+        if (!string.equals("null")) {
+            if (string.contains("INSERT INTO") || string.contains("SELECT * FROM") || string.contains("*)")
+                    || string.contains("VALUES")) {
+                contains = 1;
+            }
+        } else {
+            contains = 0;
         }
         return contains;
     }
