@@ -1,8 +1,12 @@
 package dbHandler;
 
+import ResponseTypes.RSSFeed;
+import ResponseTypes.StackOverFlowRSSFeed;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DBFunctions {
 
@@ -79,34 +83,41 @@ public class DBFunctions {
         sql = "insert into ";
     }
 
-    //Joe Silveira
-    //Method to add just job title to database
-    public void addTitleToJobsDatabaseTable(String title) throws SQLException {
-        //call database connection
+    public void addJobToStackOverFlowTable(String guid, String link, String name, String category, String title, String description,
+                                           String pubDate, String updated, String location) {
         conn = connectToDatabase();
 
-        validString = stringCheck(title);
 
-        //if the string is good
-        if (validString == 0) {
-            try {
-                String sqlStatement = "INSERT INTO Job_Titles(job_title) VALUES(?) ";
-                PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
-                pStatement.setString(1, title);
-                pStatement.execute();
-            } catch (Exception e) {
+        try {
+            String sqlStatement = "INSERT INTO StackOverFlowJobs(guid,link,name,category,title,description," +
+                    "pubDate,updated,location,insertion_time) VALUES(?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
 
-            }
-        } else {
-            validString = 1;
+
+            pStatement.setString(1, guid);
+            pStatement.setString(2, link);
+            pStatement.setString(3, name);
+            pStatement.setString(4, category);
+            pStatement.setString(5, title);
+            pStatement.setString(6, description);
+            pStatement.setString(7, pubDate);
+            pStatement.setString(8, updated);
+            pStatement.setString(9, location);
+            pStatement.setString(10, LocalDateTime.now().toString());
+            pStatement.execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
+
 
     //Joe silveira
     //Method to add job full parameters to database
     //Not used in project 2
-    public void addJobJobsDatabase(String jobID, String jobType, String gitHub_Url, String job_Created_TimeStamp, String company, String company_url,
-                                   String job_location, String job_title, String job_description, String how_to_apply, String company_logo) {
+    public void addJobToGithubJobsTable(String jobID, String jobType, String gitHub_Url, String job_Created_TimeStamp, String company, String company_url,
+                                        String job_location, String job_title, String job_description, String how_to_apply, String company_logo) {
 
 
         int allValid = 0;
@@ -168,10 +179,33 @@ public class DBFunctions {
                     || string.contains("VALUES")) {
                 contains = 1;
             }
-        } else {
-            contains = 0;
         }
         return contains;
+    }
+
+    //********************Striclty Used for testing purposes*************
+
+    //Joe Silveira
+    //Method to add just job title to database
+    public void addTitleToJobsDatabaseTable(String title) throws SQLException {
+        //call database connection
+        conn = connectToDatabase();
+
+        validString = stringCheck(title);
+
+        //if the string is good
+        if (validString == 0) {
+            try {
+                String sqlStatement = "INSERT INTO Job_Titles(job_title) VALUES(?) ";
+                PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
+                pStatement.setString(1, title);
+                pStatement.execute();
+            } catch (SQLException ignored) {
+
+            }
+        } else {
+            validString = 1;
+        }
     }
 }
 

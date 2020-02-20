@@ -1,14 +1,13 @@
 package testing;
 
-import connections.HTTPRequest;
+import connections.GithubJSONRequest;
 import dbHandler.DBFunctions;
-import runner.runtimeHandler;
 
 import java.sql.*;
 
 public class testMethods {
 
-    HTTPRequest http = new HTTPRequest();
+    GithubJSONRequest http = new GithubJSONRequest();
     DBFunctions dbFunc = new DBFunctions();
     Connection conn = null;
     String api = "https://jobs.github.com/positions.json?page=";

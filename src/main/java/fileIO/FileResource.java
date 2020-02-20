@@ -7,12 +7,11 @@ Class to handle file i/o
 package fileIO;
 
 
-import connections.HTTPRequest;
-import json.ResponseData;
+import connections.GithubJSONRequest;
+import ResponseTypes.gitHubJSONResponse;
 import screens.mainScreen;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -29,7 +28,7 @@ public class FileResource {
 
     //Java class variables
     JFileChooser fileChooser = new JFileChooser();
-    HTTPRequest http = new HTTPRequest();
+    GithubJSONRequest http = new GithubJSONRequest();
     mainScreen ms = new mainScreen();
     BufferedWriter writer;
     JFrame frame = new JFrame();
@@ -77,7 +76,7 @@ public class FileResource {
 
     //Joe Silveira
     //Method to write contents of jobs title to file
-    public void writeJobsToFile(ArrayList<ResponseData> list, File file) throws IOException {
+    public void writeJobsToFile(ArrayList<gitHubJSONResponse> list, File file) throws IOException {
 
         writer = new BufferedWriter(new FileWriter(file, true));
 
@@ -102,15 +101,7 @@ public class FileResource {
 
         writer.append("***********************************************************************************");
         writer.close();
-
-
-//        //Open the file if supported
-//        if (Desktop.isDesktopSupported()) {
-//            Desktop.getDesktop().open(file);
-//        }
-
     }
-
 
     //Joe silveira
     //Method to get user file path

@@ -21,6 +21,10 @@ public class mainScreen {
         frame.setLocationRelativeTo(null);
     }
 
+    public void makeMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
+    }
+
     public int askToClearFile() {
         int clear = JOptionPane.showConfirmDialog(null, "Would you like clear the file before writing the jobs?");
         return clear;

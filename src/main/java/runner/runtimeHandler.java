@@ -1,6 +1,8 @@
 package runner;//joe silveira
 
-import connections.HTTPRequest;
+import ResponseTypes.RSSFeed;
+import connections.GithubJSONRequest;
+import connections.StackOverflowRSSRequest;
 import dbHandler.DatabaseHandler;
 import fileIO.FileResource;
 import screens.mainScreen;
@@ -21,6 +23,7 @@ public class runtimeHandler {
     File userFile;
     File programFile;
     String api = "https://jobs.github.com/positions.json?page=";
+    String rssUrl = "https://stackoverflow.com/jobs/feed";
     String fileName = "jobsAPI.txt";
 
     //Java class variables
@@ -28,66 +31,80 @@ public class runtimeHandler {
     JFrame frame = new JFrame();
 
     //Program class varialbes
-    HTTPRequest http = new HTTPRequest();
+    GithubJSONRequest http = new GithubJSONRequest();
+    StackOverflowRSSRequest rssRequest = new StackOverflowRSSRequest();
     mainScreen ms = new mainScreen();
     FileResource fileIO = new FileResource();
     mainScreen screens = new mainScreen();
     DatabaseHandler dbHandler = new DatabaseHandler();
 
+
     //Joe silveira
     //Method to run the program with all necessary method calls
     public void startProgram() throws IOException, SQLException {
-        //Print message
-        JOptionPane.showMessageDialog(null, "Welcome to the git hub jobs fetcher");
+        //rssRequest.makeRequest(rssUrl);
 
-        //Load Progress Bar
-        screens.initProgressBar(progressBar, frame);
+//        //Print message
+//        JOptionPane.showMessageDialog(null, "Welcome to the git hub jobs fetcher");
+//
+//        //Load Progress Bar
+//        screens.initProgressBar(progressBar, frame);
+//
+//        //initaliaze github jobs table
+//        dbHandler.initGitHubJobsTable();
 
-        //initaliaze job table
-        dbHandler.initJobsTable();
+        //initialize stack overflow jobs table
+        dbHandler.initStackOverFLowJobsTable();
 
-        //make api request
-        pingAPI(progressBar, frame);
+        //rssRequest.addJobsToDB();
 
-        //initalize file in user path
-        fileIO.createFile(fileName);
+        rssRequest.printJobs();
 
-        //get the user file and set the local file
-        userFile = fileIO.getUserFilePath();
-
-        //Write to user file
-        fileIO.writeJobsToFile(http.getJobsList(), userFile);
-
-        //ask to open file
-        openFile = ms.askToOpenFile();
-        if (openFile == 0) {
-            //Open the file if supported
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().open(fileIO.getUserFilePath());
-            }
-        }
-
-        //write to db
-        http.addJobToDB();
-
-        //show jobs being written to db
-        ms.showJobsWrittenToDB();
-
-        /*
-        Methods calls for testing purposes
-         */
-
-        //*********File Stuff*******
-        //Create local file for test and write the exact same contents of the user file to that file
-
-        //Create file in program
-        fileIO.createProgramFile(fileName);
-
-        //Set the program file path
-        programFile = fileIO.getProgramFile();
-
-        //Write to the program file
-        fileIO.writeJobsToFile(http.getJobsList(), programFile);
+//        //make api request
+//        pingAPI(progressBar, frame);
+//
+//        //initalize file in user path
+//        fileIO.createFile(fileName);
+//
+//        //get the user file and set the local file
+//        userFile = fileIO.getUserFilePath();
+//
+//        //Write to user file
+//        fileIO.writeJobsToFile(http.getJobsList(), userFile);
+//
+//        //ask to open file
+//        openFile = ms.askToOpenFile();
+//        if (openFile == 0) {
+//            //Open the file if supported
+//            if (Desktop.isDesktopSupported()) {
+//                Desktop.getDesktop().open(fileIO.getUserFilePath());
+//            }
+//        }
+//
+//        //Message telling user jobs being written
+//        ms.makeMessage("Press okay to write the job to the database");
+//
+//        //write to db
+//        http.addJobsToGitHubDB();
+//
+//        //show jobs being written to db
+//        ms.showJobsWrittenToDB();
+//
+//        /*
+//        Methods calls for testing purposes
+//         */
+//
+//        //*********File Stuff*******
+//        //Create local file for test and write the exact same contents of the user file to that file
+//
+//        //Create file in program
+//        fileIO.createProgramFile(fileName);
+//
+//        //Set the program file path
+//        programFile = fileIO.getProgramFile();
+//
+//        //Write to the program file
+//        fileIO.writeJobsToFile(http.getJobsList(), programFile);
     }
 
     //Joe Silveira

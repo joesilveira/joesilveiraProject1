@@ -1,6 +1,5 @@
 package dbHandler;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -8,12 +7,11 @@ public class DatabaseHandler {
 
     //Class variables
     DBFunctions dbFunc = new DBFunctions();
-    Connection conn = null;
-    ArrayList<String> jobTableColumns = new ArrayList<String>();
+    ArrayList<String> jobTableColumns = new ArrayList<>();
 
     //Joe silveira
     //Method to initialize the database with a table and all job paramters
-    public void initJobsTable() throws SQLException {
+    public void initGitHubJobsTable() throws SQLException {
 
         //Instantiate Table
         String sql = "jobID string," + "\n" + "jobType string," +
@@ -24,6 +22,20 @@ public class DatabaseHandler {
                 "company_logo string," + "\n" + "insertion_Time CURRENT_TIMESTAMP";
 
         dbFunc.createTable("Jobs", sql);
+    }
+
+    //Joe silveira
+    //Method to initialize the database with a table and all job paramters
+    public void initStackOverFLowJobsTable() throws SQLException {
+
+        //Instantiate Table
+        String sql = "guid string," + "\n" + "link string," +
+                "name string," + "\n" + "category string," + "\n" +
+                "title string," + "\n" + "description string," + "\n" +
+                "pubDate string," + "\n" + "updated string," + "\n" +
+                "location string," + "\n" + "insertion_Time CURRENT_TIMESTAMP";
+
+        dbFunc.createTable("StackOverFlowJobs", sql);
     }
 
 
