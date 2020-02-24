@@ -7,8 +7,8 @@ Class to handle file i/o
 package fileIO;
 
 
-import connections.GithubJSONRequest;
-import ResponseTypes.gitHubJSONResponse;
+import connectionRequests.GithubJSONRequest;
+import dataTypes.GithubModel;
 import screens.mainScreen;
 
 import javax.swing.*;
@@ -76,7 +76,7 @@ public class FileResource {
 
     //Joe Silveira
     //Method to write contents of jobs title to file
-    public void writeJobsToFile(ArrayList<gitHubJSONResponse> list, File file) throws IOException {
+    public void writeJobsToFile(ArrayList<GithubModel> list, File file) throws IOException {
 
         writer = new BufferedWriter(new FileWriter(file, true));
 

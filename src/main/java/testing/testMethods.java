@@ -1,6 +1,6 @@
 package testing;
 
-import connections.GithubJSONRequest;
+import connectionRequests.GithubJSONRequest;
 import dbHandler.DBFunctions;
 
 import java.sql.*;

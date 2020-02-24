@@ -4,13 +4,13 @@ Joe silveira
 Class to handle json data
  */
 
-package ResponseTypes;
+package dataTypes;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class gitHubJSONResponse {
+public class GithubModel {
     @Expose
     String id;
     @Expose

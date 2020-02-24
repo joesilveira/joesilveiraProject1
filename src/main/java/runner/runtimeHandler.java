@@ -1,14 +1,14 @@
 package runner;//joe silveira
 
-import ResponseTypes.RSSFeed;
-import connections.GithubJSONRequest;
-import connections.StackOverflowRSSRequest;
+import connectionRequests.GithubJSONRequest;
+import connectionRequests.StackOverflowRSSRequest;
+import dataTypes.StoreRSSFeed;
 import dbHandler.DatabaseHandler;
 import fileIO.FileResource;
 import screens.mainScreen;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -41,8 +41,7 @@ public class runtimeHandler {
 
     //Joe silveira
     //Method to run the program with all necessary method calls
-    public void startProgram() throws IOException, SQLException {
-        //rssRequest.makeRequest(rssUrl);
+    public void startProgram() throws IOException, SQLException, XMLStreamException {
 
 //        //Print message
 //        JOptionPane.showMessageDialog(null, "Welcome to the git hub jobs fetcher");
@@ -56,9 +55,13 @@ public class runtimeHandler {
         //initialize stack overflow jobs table
         dbHandler.initStackOverFLowJobsTable();
 
-        //rssRequest.addJobsToDB();
+        //make request
+        StoreRSSFeed feed = rssRequest.makeRequest(rssUrl);
 
-        rssRequest.printJobs();
+        feed.printJobs();
+
+        rssRequest.addJobsToDB(feed.getJobs());
+
 
 //        //make api request
 //        pingAPI(progressBar, frame);

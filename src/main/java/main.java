@@ -8,13 +8,14 @@
 
 import runner.runtimeHandler;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class main {
 
 
-    public static void main(String args[]) throws IOException, SQLException {
+    public static void main(String[] args) throws IOException, SQLException, XMLStreamException {
 
         //Start program
         runtimeHandler handler = new runtimeHandler();

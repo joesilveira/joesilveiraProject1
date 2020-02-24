@@ -1,12 +1,8 @@
 package dbHandler;
 
-import ResponseTypes.RSSFeed;
-import ResponseTypes.StackOverFlowRSSFeed;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DBFunctions {
 

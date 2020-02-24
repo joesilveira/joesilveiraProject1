@@ -4,14 +4,14 @@ Joe Silveira
 Class to handle all http requests and responses
  */
 
-package connections;
+package connectionRequests;
 
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dbHandler.DBFunctions;
-import ResponseTypes.gitHubJSONResponse;
+import dataTypes.GithubModel;
 
 import javax.swing.*;
 import java.lang.reflect.Type;
@@ -28,8 +28,8 @@ public class GithubJSONRequest {
     HttpClient client;
 
     //Class Variables
-    ArrayList<gitHubJSONResponse> responseJobsList;
-    ArrayList<gitHubJSONResponse> jobsList = new ArrayList<>();
+    ArrayList<GithubModel> responseJobsList;
+    ArrayList<GithubModel> jobsList = new ArrayList<>();
     DBFunctions dbFun = new DBFunctions();
     int numJobsOnPage = 0;
     int totalJobs = 0;
@@ -74,7 +74,7 @@ public class GithubJSONRequest {
             Gson g = builder.create();
 
 
-            Type collectionType = new TypeToken<Collection<gitHubJSONResponse>>() {
+            Type collectionType = new TypeToken<Collection<GithubModel>>() {
             }.getType();
             responseJobsList = g.fromJson(body, collectionType);
 
@@ -92,12 +92,12 @@ public class GithubJSONRequest {
     //Joe Silveira
     //this method adds the complete job to the array
     public void addJobsToGitHubDB() {
-        for (ResponseTypes.gitHubJSONResponse gitHubJSONResponse : jobsList) {
+        for (GithubModel GithubModel : jobsList) {
             try {
-                dbFun.addJobToGithubJobsTable(gitHubJSONResponse.getId(), gitHubJSONResponse.getType(), gitHubJSONResponse.getUrl(),
-                        gitHubJSONResponse.getCreated_at(), gitHubJSONResponse.getCompany(), gitHubJSONResponse.getCompany_url(),
-                        gitHubJSONResponse.getLocation(), gitHubJSONResponse.getTitle(), gitHubJSONResponse.getDescription(),
-                        gitHubJSONResponse.getHow_to_apply(), gitHubJSONResponse.getCompany_logo());
+                dbFun.addJobToGithubJobsTable(GithubModel.getId(), GithubModel.getType(), GithubModel.getUrl(),
+                        GithubModel.getCreated_at(), GithubModel.getCompany(), GithubModel.getCompany_url(),
+                        GithubModel.getLocation(), GithubModel.getTitle(), GithubModel.getDescription(),
+                        GithubModel.getHow_to_apply(), GithubModel.getCompany_logo());
             } catch (Exception e) {
                 e.printStackTrace();
                 e.getCause();
@@ -115,19 +115,19 @@ public class GithubJSONRequest {
     //Method to print the job paramters
     public void printJob() {
         totalJobs = 0;
-        for (ResponseTypes.gitHubJSONResponse gitHubJSONResponse : jobsList) {
+        for (GithubModel GithubModel : jobsList) {
             System.out.println("Job:" + totalJobs + "\n" +
-                    "   " + "Job ID: " + gitHubJSONResponse.getId() + "\n" +
-                    "   " + "Job Type: " + gitHubJSONResponse.getType() + "\n" +
-                    "   " + "Github URL: " + gitHubJSONResponse.getUrl() + "\n" +
-                    "   " + "Created At: " + gitHubJSONResponse.getCreated_at() + "\n" +
-                    "   " + "Company: " + gitHubJSONResponse.getCompany() + "\n" +
-                    "   " + "Company URL: " + gitHubJSONResponse.getCompany_url() + "\n" +
-                    "   " + "Job Location: " + gitHubJSONResponse.getLocation() + "\n" +
-                    "   " + "Job Title: " + gitHubJSONResponse.getTitle() + "\n" +
+                    "   " + "Job ID: " + GithubModel.getId() + "\n" +
+                    "   " + "Job Type: " + GithubModel.getType() + "\n" +
+                    "   " + "Github URL: " + GithubModel.getUrl() + "\n" +
+                    "   " + "Created At: " + GithubModel.getCreated_at() + "\n" +
+                    "   " + "Company: " + GithubModel.getCompany() + "\n" +
+                    "   " + "Company URL: " + GithubModel.getCompany_url() + "\n" +
+                    "   " + "Job Location: " + GithubModel.getLocation() + "\n" +
+                    "   " + "Job Title: " + GithubModel.getTitle() + "\n" +
                     "   " + "Job Description: " + "\n" +
                     "   " + "How to apply: " + "\n" +
-                    "   " + "Company Logo: " + gitHubJSONResponse.getCompany_logo() + "\n"
+                    "   " + "Company Logo: " + GithubModel.getCompany_logo() + "\n"
             );
             totalJobs++;
         }
@@ -155,7 +155,7 @@ public class GithubJSONRequest {
 
     //Joe silveira
     //Getter for the jobslist
-    public ArrayList<gitHubJSONResponse> getJobsList() {
+    public ArrayList<GithubModel> getJobsList() {
         return jobsList;
     }
 

@@ -1,11 +1,9 @@
-package ResponseTypes;
-
-import ResponseTypes.StackOverFlowRSSFeed;
+package dataTypes;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RSSFeed {
+public class StoreRSSFeed {
 
 
     String guid;
@@ -18,7 +16,10 @@ public class RSSFeed {
     String updated;
     String location;
 
-    public RSSFeed(String guid, String link, String name, String category, String title, String description, String pubDate, String updated, String location) {
+
+    List<StackOverFlowModel> jobs = new ArrayList<>();
+
+    public StoreRSSFeed(String guid, String link, String name, String category, String title, String description, String pubDate, String updated, String location) {
         this.guid = guid;
         this.link = link;
         this.name = name;
@@ -28,6 +29,14 @@ public class RSSFeed {
         this.pubDate = pubDate;
         this.updated = updated;
         this.location = location;
+    }
+
+    public List<StackOverFlowModel> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(List<StackOverFlowModel> jobs) {
+        this.jobs = jobs;
     }
 
     public String getGuid() {
@@ -100,6 +109,12 @@ public class RSSFeed {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public void printJobs() {
+        for (int i = 0; i < jobs.size(); i++) {
+            System.out.println(jobs.get(i));
+        }
     }
 
 

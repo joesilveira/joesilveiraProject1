@@ -1,14 +1,15 @@
-package connections;
+package connectionRequests;
 
-import ResponseTypes.RSSFeed;
-import ResponseTypes.StackOverFlowRSSFeed;
+import dataTypes.StoreRSSFeed;
+import dataTypes.StackOverFlowModel;
 import dbHandler.DBFunctions;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,19 +37,10 @@ public class StackOverflowRSSRequest {
     static final String LOCATION = "location";
     static final String NAME = "name";
     static final String IMAGE = "";
-    StackOverFlowRSSFeed message = new StackOverFlowRSSFeed();
 
-    public List<StackOverFlowRSSFeed> getJobs() {
-        return jobs;
-    }
+    public StoreRSSFeed makeRequest(String link1) throws IOException, XMLStreamException {
 
-    List<StackOverFlowRSSFeed> jobs = new ArrayList<>();
-
-
-    public void makeRequest(String link1) throws MalformedURLException {
-
-        //Initiliaze the class response type
-        RSSFeed job = null;
+        StoreRSSFeed feed = null;
 
         //https://www.vogella.com/tutorials/RSSFeed/article.html
         url = new URL(link1);
@@ -71,7 +63,7 @@ public class StackOverflowRSSRequest {
             String pubdate = "";
             String updated = "";
             String location = "";
-            String guid = "";
+            String guid = "GUID";
 
             //Class to read xml
             XMLInputFactory xmlInput = XMLInputFactory.newInstance();
@@ -86,85 +78,96 @@ public class StackOverflowRSSRequest {
             //loop throught the contents of the page
             while (eventReader.hasNext()) {
 
+                //System.out.println("Num Loop: " + numLoop);
+
+                //System.out.println("While: event has next: true");
+
                 //Create the xml event
                 XMLEvent event = eventReader.nextEvent();
 
                 //if the event is the start element
                 if (event.isStartElement()) {
 
+                    //System.out.println("Is start element: true");
+
                     //Get the local part of the xml feed
                     String localPart = event.asStartElement().getName().getLocalPart();
 
-                    //print it for testing
                     //System.out.println(localPart);
-
 
                     switch (localPart) {
 
                         case ITEM:
 
-                            if (isFeedHeader) {
-                                isFeedHeader = false;
-                                job = new RSSFeed(guid, link, name, category, title, description, pubdate, updated, location);
+                            //System.out.println("Case Item: true");
 
+                            if (isFeedHeader) {
+
+                                //System.out.println("Is Feed Header: true");
+
+                                isFeedHeader = false;
+                                feed = new StoreRSSFeed(guid, link, name, category, title, description, pubdate,
+                                        updated, location);
+
+                                //System.out.println("New Class Created: true");
                             }
-                            event = eventReader.nextEvent();
                             break;
 
-
                         case TITLE:
-                            event = eventReader.nextEvent();
-                            title = event.asCharacters().getData();
+                            //System.out.println("Case Title: true");
+                            title = getCharacterData(event, eventReader);
                             break;
 
                         case GUID:
+                            //System.out.println("Case GUID: true");
                             event = eventReader.nextEvent();
                             guid = event.asCharacters().getData();
+                            System.out.println(guid);
                             break;
 
                         case LINK:
-                            event = eventReader.nextEvent();
-                            link = event.asCharacters().getData();
+                            //System.out.println("Case Link: true");
+                            link = getCharacterData(event, eventReader);
                             break;
 
                         case NAME:
-                            event = eventReader.nextEvent();
-                            name = event.asCharacters().getData();
+                            //System.out.println("Case Name: true");
+                            name = getCharacterData(event, eventReader);
                             break;
 
-
                         case CATEGORY:
-                            event = eventReader.nextEvent();
-                            category = event.asCharacters().getData();
+                            //System.out.println("Case Category: true");
+                            category = getCharacterData(event, eventReader);
                             break;
 
                         case DESCRIPTION:
-                            event = eventReader.nextEvent();
-                            description = event.asCharacters().getData();
+                            //System.out.println("Case Description: true");
+                            description = getCharacterData(event, eventReader);
                             break;
 
                         case UPDATED:
-                            event = eventReader.nextEvent();
-                            updated = event.asCharacters().getData();
+                            //System.out.println("Case Updated: true");
+                            updated = getCharacterData(event, eventReader);
                             break;
 
                         case LOCATION:
-                            event = eventReader.nextEvent();
-                            location = event.asCharacters().getData();
+                            //System.out.println("Case Location: true");
+                            location = getCharacterData(event, eventReader);
                             break;
 
-
                         case PUB_DATE:
-                            event = eventReader.nextEvent();
-                            pubdate = event.asCharacters().getData();
+                            //System.out.println("Case pubDate: true");
+                            pubdate = getCharacterData(event, eventReader);
                             break;
                     }
 
                     //If the event is not the start element, it is the end element
                 } else if (event.isEndElement()) {
 
-                    if (event.asEndElement().getName().getLocalPart() == (ITEM)) {
+                    //System.out.println("Is end element: true");
 
+                    if (event.asEndElement().getName().getLocalPart().equals(ITEM)) {
+                        StackOverFlowModel message = new StackOverFlowModel();
                         message.setTitle(title);
                         message.setCategory(category);
                         message.setDescription(description);
@@ -174,33 +177,39 @@ public class StackOverflowRSSRequest {
                         message.setPubDate(pubdate);
                         message.setGuid(guid);
                         message.setLink(link);
-                        jobs.add(message);
-                        event = eventReader.nextEvent();
-                        continue;
+                        feed.getJobs().add(message);
                     }
-
                 }
             }
-
             //end try
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
-
+        return feed;
     }
 
-    public void printJobs() {
+    private String getCharacterData(XMLEvent event, XMLEventReader eventReader) throws XMLStreamException {
+        String result = "";
+        event = eventReader.nextEvent();
+        if (event instanceof Characters) {
+            result = event.asCharacters().getData();
+        }
+        return result;
+    }
+
+
+    //Joe Silveira
+    //Method to add all jobs to the database
+    public void addJobsToDB(List<StackOverFlowModel> jobs) {
         for (int i = 0; i < jobs.size(); i++) {
-            System.out.println(jobs.get(i));
+            dbFunc.addJobToStackOverFlowTable(jobs.get(i).getGuid(), jobs.get(i).getLink(), jobs.get(i).getName(),
+                    jobs.get(i).getCategory(), jobs.get(i).getTitle(), jobs.get(i).getDescription(), jobs.get(i).getPubDate(),
+                    jobs.get(i).getUpdated(), jobs.get(i).getLocation());
+            System.out.println("Job Added to DB");
         }
     }
-
-    public void addJobsToDB() {
-        System.out.println(jobs.toString());
-
-    }
-
 
 }
+
 
