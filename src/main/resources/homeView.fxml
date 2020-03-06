@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="scenePane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label id="mainSceneLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="28.0" layoutY="14.0"
+               prefHeight="77.0" prefWidth="722.0"
+               style="-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px; -fx-border-radius: 10px;"
+               text="Home">
+            <font>
+                <Font size="24.0"/>
+            </font>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </Label>
+        <TextArea editable="false" layoutX="24.0" layoutY="109.0" prefHeight="92.0" prefWidth="762.0"
+                  text="Welcome to the Jobs Fetcher!">
+            <font>
+                <Font size="36.0"/>
+            </font>
+        </TextArea>
+        <TextArea editable="false" layoutX="17.0" layoutY="222.0" prefHeight="334.0" prefWidth="776.0"
+                  text="Instructions&#10;&#10;Home Button: Brings you to the home page&#10;&#10;Tasks Button: Allows you to run tasks such as fetch jobs, write to database, and write to file&#10;&#10;View Table Button: Allows you to view and search for the jobs in the database&#10;&#10;Search: Allows you to search for a job and find it on the map"
+                  AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="40.0"
+                  AnchorPane.topAnchor="222.0">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextArea>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+</AnchorPane>

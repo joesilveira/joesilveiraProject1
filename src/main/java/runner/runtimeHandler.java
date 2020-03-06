@@ -2,16 +2,13 @@ package runner;//joe silveira
 
 import connectionRequests.GithubJSONRequest;
 import connectionRequests.StackOverflowRSSRequest;
+import controllers.mainScreen;
 import dataTypes.StoreRSSFeed;
 import dbHandler.DatabaseHandler;
 import fileIO.FileResource;
-import screens.mainScreen;
 
 import javax.swing.*;
-import javax.xml.stream.XMLStreamException;
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 
 public class runtimeHandler {
 
@@ -41,39 +38,24 @@ public class runtimeHandler {
 
     //Joe silveira
     //Method to run the program with all necessary method calls
-    public void startProgram() throws IOException, SQLException, XMLStreamException {
+    public void startProgram() throws Exception {
 
-//        //Print message
-//        JOptionPane.showMessageDialog(null, "Welcome to the git hub jobs fetcher");
-//
-//        //Load Progress Bar
-//        screens.initProgressBar(progressBar, frame);
-//
-//        //initaliaze github jobs table
-//        dbHandler.initGitHubJobsTable();
+        //initaliaze github jobs table
+        dbHandler.initGitHubJobsTable();
 
         //initialize stack overflow jobs table
         dbHandler.initStackOverFLowJobsTable();
 
-        //make request
+        //make request and add to db for stack overflow jobs
         StoreRSSFeed feed = rssRequest.makeRequest(rssUrl);
-
-        feed.printJobs();
-
         rssRequest.addJobsToDB(feed.getJobs());
 
+        //make api request for git hub jobs and add to db
+        pingAPI();
 
-//        //make api request
-//        pingAPI(progressBar, frame);
-//
-//        //initalize file in user path
-//        fileIO.createFile(fileName);
-//
-//        //get the user file and set the local file
-//        userFile = fileIO.getUserFilePath();
-//
-//        //Write to user file
-//        fileIO.writeJobsToFile(http.getJobsList(), userFile);
+        //write to db
+        http.addJobsToGitHubDB();
+
 //
 //        //ask to open file
 //        openFile = ms.askToOpenFile();
@@ -83,15 +65,11 @@ public class runtimeHandler {
 //                Desktop.getDesktop().open(fileIO.getUserFilePath());
 //            }
 //        }
+
 //
-//        //Message telling user jobs being written
-//        ms.makeMessage("Press okay to write the job to the database");
+
 //
-//        //write to db
-//        http.addJobsToGitHubDB();
-//
-//        //show jobs being written to db
-//        ms.showJobsWrittenToDB();
+
 //
 //        /*
 //        Methods calls for testing purposes
@@ -112,7 +90,7 @@ public class runtimeHandler {
 
     //Joe Silveira
     //Method to ping api with progress bar
-    public void pingAPI(JProgressBar progressBar, JFrame frame) {
+    public void pingAPI() {
 
         //Loop to loop through each page until there are less than 50 jobs on page
         while (callRequest == 1) {
@@ -124,12 +102,12 @@ public class runtimeHandler {
             http.makeGetRequest(url);
 
             //Progress bar updates
-            numJobs += http.getNumJobsOnPage();
-            progressBar.setMinimum(0);
-            progressBar.setMaximum(numJobs);
-            for (int i = 0; i < numJobs; i++) {
-                progressBar.setValue(i);
-            }
+//            numJobs += http.getNumJobsOnPage();
+//            progressBar.setMinimum(0);
+//            progressBar.setMaximum(numJobs);
+//            for (int i = 0; i < numJobs; i++) {
+//                progressBar.setValue(i);
+//            }
             pageNum++;
 
             //Close frame after completion

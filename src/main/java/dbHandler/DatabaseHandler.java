@@ -10,7 +10,7 @@ public class DatabaseHandler {
     ArrayList<String> jobTableColumns = new ArrayList<>();
 
     //Joe silveira
-    //Method to initialize the database with a table and all job paramters
+    //Method to initialize the database with a table and all job paramaters
     public void initGitHubJobsTable() throws SQLException {
 
         //Instantiate Table
@@ -25,7 +25,7 @@ public class DatabaseHandler {
     }
 
     //Joe silveira
-    //Method to initialize the database with a table and all job paramters
+    //Method to initialize the database with a table and all job paramaters
     public void initStackOverFLowJobsTable() throws SQLException {
 
         //Instantiate Table

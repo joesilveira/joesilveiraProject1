@@ -9,7 +9,7 @@ package fileIO;
 
 import connectionRequests.GithubJSONRequest;
 import dataTypes.GithubModel;
-import screens.mainScreen;
+import controllers.mainScreen;
 
 import javax.swing.*;
 import java.io.BufferedWriter;

@@ -31,6 +31,51 @@ public class GithubModel {
     String description;
     @Expose
     String how_to_apply;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public void setCompany_url(String company_url) {
+        this.company_url = company_url;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setHow_to_apply(String how_to_apply) {
+        this.how_to_apply = how_to_apply;
+    }
+
+    public void setCompany_logo(String company_logo) {
+        this.company_logo = company_logo;
+    }
+
     @Expose
     String company_logo;
 

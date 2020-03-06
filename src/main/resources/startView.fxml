@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="227.0"
+            prefWidth="594.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.startViewController">
+    <children>
+        <AnchorPane layoutX="17.0" layoutY="14.0" prefHeight="75.0" prefWidth="560.0">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="11.0" prefHeight="47.0"
+                       prefWidth="475.0" text="Welcome to the Jobs Fetcher" textAlignment="CENTER">
+                    <font>
+                        <Font size="36.0"/>
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+        <Label layoutX="181.0" layoutY="101.0" prefHeight="26.0" prefWidth="233.0" text="Press Launch to open program"/>
+        <Button id="launch_Button" fx:id="launch_button" layoutX="159.0" layoutY="163.0" mnemonicParsing="false"
+                onAction="#launchStartView" prefHeight="39.0" prefWidth="138.0" text="Launch"/>
+        <Button fx:id="close_button" layoutX="297.0" layoutY="163.0" mnemonicParsing="false" onAction="#closeProgram"
+                prefHeight="39.0" prefWidth="138.0" text="Close"/>
+    </children>
+</AnchorPane>

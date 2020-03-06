@@ -6,22 +6,34 @@
     for the program to run
  */
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import runner.runtimeHandler;
 
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
-import java.sql.SQLException;
-
-public class main {
+public class main extends Application {
 
 
-    public static void main(String[] args) throws IOException, SQLException, XMLStreamException {
+    public static void main(String[] args) throws Exception {
 
-        //Start program
         runtimeHandler handler = new runtimeHandler();
         handler.startProgram();
+        launch(args);
+    }
 
-        //Close program
-        System.exit(0);
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        Parent root = FXMLLoader.load(getClass().getResource("startView.fxml"));
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.centerOnScreen();
+        primaryStage.setResizable(true);
+        primaryStage.sizeToScene();
+        primaryStage.show();
+
+
     }
 }

@@ -1,5 +1,8 @@
 package dbHandler;
 
+import dataTypes.GithubModel;
+import dataTypes.StackOverFlowModel;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ public class DBFunctions {
     public int getValidString() {
         return validString;
     }
+
 
     int validString = 0;
     String url = "jdbc:sqlite:APIDB.sqlite";
@@ -165,6 +169,125 @@ public class DBFunctions {
 
     }
 
+
+    //Joe Silveira
+    //Method to return job names and company from database
+    public ArrayList<String> getGithubJobNames() {
+        conn = connectToDatabase();
+        ArrayList<String> data = new ArrayList<String>();
+        String sql = "SELECT * FROM Jobs";
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String jobName = rs.getString("job_title");
+                String jobCompany = rs.getString("company");
+                String completeString = jobName + ", " + jobCompany;
+                data.add(completeString);
+
+            }
+        } catch (Exception e) {
+
+        }
+
+        return data;
+    }
+
+    //Joe Silveira
+    //Method to return job names and company from database
+    public ArrayList<String> getStackOverFlowJobNames() {
+        conn = connectToDatabase();
+        ArrayList<String> data = new ArrayList<String>();
+        String sql = "SELECT * FROM StackOverFlowJobs";
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String jobName = rs.getString("title");
+                String jobCompany = rs.getString("name");
+                String completeString = jobName + ", " + jobCompany;
+                data.add(completeString);
+
+            }
+        } catch (Exception e) {
+
+        }
+
+        return data;
+    }
+
+
+    public ArrayList<GithubModel> getGithubDBjobs() throws SQLException {
+        conn = connectToDatabase();
+        String sql = "SELECT * FROM Jobs";
+
+        ArrayList<GithubModel> jobs = new ArrayList<>();
+
+        try {
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                GithubModel job = new GithubModel();
+                job.setId(rs.getString("jobID"));
+                job.setType(rs.getString("jobType"));
+                job.setUrl(rs.getString("gitHub_Url"));
+                job.setCreated_at(rs.getString("job_created_TimeStamp"));
+                job.setCompany(rs.getString("company"));
+                job.setCompany_url(rs.getString("company_url"));
+                job.setLocation(rs.getString("job_location"));
+                job.setTitle(rs.getString("job_title"));
+                job.setDescription(rs.getString("job_description"));
+                job.setHow_to_apply(rs.getString("how_to_apply"));
+                job.setCompany_logo(rs.getString("company_logo"));
+                jobs.add(job);
+            }
+        } catch (Exception e) {
+
+        }
+
+//        for(int i = 0; i < jobs.size(); i++){
+//            System.out.println(jobs.get(i).toString());
+//        }
+
+        return jobs;
+    }
+
+    public ArrayList<StackOverFlowModel> getStackJobs() {
+        ArrayList<StackOverFlowModel> stackJobs = new ArrayList<>();
+
+        conn = connectToDatabase();
+        String sql = "SELECT * FROM StackOverFlowJobs";
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                StackOverFlowModel job = new StackOverFlowModel();
+                job.setName(rs.getString("name"));
+                job.setCategory(rs.getString("category"));
+                job.setDescription(rs.getString("description"));
+                job.setTitle(rs.getString("title"));
+                job.setGuid(rs.getString("guid"));
+                job.setLocation(rs.getString("location"));
+                job.setLink(rs.getString("link"));
+                stackJobs.add(job);
+            }
+
+        } catch (Exception e) {
+
+        }
+
+        return stackJobs;
+    }
+
+
     //Joe Silveira
     //Method to make sure string does not contain any harmful data
     //Return 1 if string contains a bad string
@@ -178,6 +301,7 @@ public class DBFunctions {
         }
         return contains;
     }
+
 
     //********************Striclty Used for testing purposes*************
 

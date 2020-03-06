@@ -2,6 +2,7 @@ package dataTypes;
 
 public class StackOverFlowModel {
 
+
     String guid;
     String link;
     String name;

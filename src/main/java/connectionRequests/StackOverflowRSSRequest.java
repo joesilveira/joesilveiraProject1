@@ -1,17 +1,17 @@
 package connectionRequests;
 
-import dataTypes.StoreRSSFeed;
 import dataTypes.StackOverFlowModel;
+import dataTypes.StoreRSSFeed;
 import dbHandler.DBFunctions;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.*;
+import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.XMLEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class StackOverflowRSSRequest {
@@ -38,6 +38,9 @@ public class StackOverflowRSSRequest {
     static final String NAME = "name";
     static final String IMAGE = "";
 
+
+    //Joe Silveira
+    //Method to ping url that returns rss feed and add responses to list
     public StoreRSSFeed makeRequest(String link1) throws IOException, XMLStreamException {
 
         StoreRSSFeed feed = null;
@@ -67,6 +70,7 @@ public class StackOverflowRSSRequest {
 
             //Class to read xml
             XMLInputFactory xmlInput = XMLInputFactory.newInstance();
+
 
             //open xml stream
             InputStream inputReader = url.openStream();
@@ -122,7 +126,7 @@ public class StackOverflowRSSRequest {
                             //System.out.println("Case GUID: true");
                             event = eventReader.nextEvent();
                             guid = event.asCharacters().getData();
-                            System.out.println(guid);
+                            //System.out.println(guid);
                             break;
 
                         case LINK:
@@ -142,7 +146,9 @@ public class StackOverflowRSSRequest {
 
                         case DESCRIPTION:
                             //System.out.println("Case Description: true");
-                            description = getCharacterData(event, eventReader);
+                            description = eventReader.getElementText().trim();
+                            description = removeHtmlTags(description);
+                            //System.out.println(description);
                             break;
 
                         case UPDATED:
@@ -178,6 +184,7 @@ public class StackOverflowRSSRequest {
                         message.setGuid(guid);
                         message.setLink(link);
                         feed.getJobs().add(message);
+
                     }
                 }
             }
@@ -189,6 +196,8 @@ public class StackOverflowRSSRequest {
         return feed;
     }
 
+    //Joe silveira
+    //Method to get the value from the rss feed data
     private String getCharacterData(XMLEvent event, XMLEventReader eventReader) throws XMLStreamException {
         String result = "";
         event = eventReader.nextEvent();
@@ -206,10 +215,26 @@ public class StackOverflowRSSRequest {
             dbFunc.addJobToStackOverFlowTable(jobs.get(i).getGuid(), jobs.get(i).getLink(), jobs.get(i).getName(),
                     jobs.get(i).getCategory(), jobs.get(i).getTitle(), jobs.get(i).getDescription(), jobs.get(i).getPubDate(),
                     jobs.get(i).getUpdated(), jobs.get(i).getLocation());
-            System.out.println("Job Added to DB");
+            //System.out.println("Job Added to DB");
         }
     }
 
+
+    //https://stackoverflow.com/questions/21940554/removing-html-tags-in-rss-feed
+    public String removeHtmlTags(String inStr) {
+        int index = 0;
+        int index2 = 0;
+        while (index != -1) {
+            index = inStr.indexOf("<");
+            index2 = inStr.indexOf(">", index);
+            if (index != -1 && index2 != -1) {
+                inStr = inStr.substring(0, index).concat(inStr.substring(index2 + 1));
+            }
+        }
+
+        inStr = inStr.replaceAll("&nbsp;", "");
+        return inStr;
+    }
 }
 
 
