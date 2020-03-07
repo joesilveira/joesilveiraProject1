@@ -2,7 +2,11 @@ package controllers;
 
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
+import com.lynden.gmapsfx.javascript.JavascriptObject;
 import com.lynden.gmapsfx.javascript.object.*;
+import com.lynden.gmapsfx.service.geocoding.GeocodingService;
+import com.lynden.gmapsfx.service.geocoding.GeocodingServiceCallback;
+import connectionRequests.GeoCoding;
 import dbHandler.DBFunctions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,13 +14,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.ResourceBundle;
 
-public class mapController implements Initializable, MapComponentInitializedListener {
+public class mapController extends JavascriptObject implements Initializable, MapComponentInitializedListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GeocodingService.class);
+
+    public GeocodingServiceCallback callback;
 
     @FXML
     private AnchorPane mapView;
@@ -47,6 +56,8 @@ public class mapController implements Initializable, MapComponentInitializedList
     ArrayList<String> allJobLocations = new ArrayList<>();
 
     private DBFunctions dbFunc = new DBFunctions();
+    private GeoCoding location = new GeoCoding();
+    String geoCode = "http://www.mapquestapi.com/geocoding/v1/address?key=xGA2gfYEJmplL7GrATFYpONUR1dGkPxx&location=1600+Pennsylvania+Ave+NW,Washington,DC,20500";
 
 
     @Override
@@ -58,11 +69,13 @@ public class mapController implements Initializable, MapComponentInitializedList
 
     @Override
     public void mapInitialized() {
+        location.geoCode(geoCode);
         LatLong joeSmithLocation = new LatLong(47.6197, -122.3231);
         LatLong joshAndersonLocation = new LatLong(47.6297, -122.3431);
         LatLong bobUnderwoodLocation = new LatLong(47.6397, -122.3031);
         LatLong tomChoiceLocation = new LatLong(47.6497, -122.3325);
         LatLong fredWilkieLocation = new LatLong(47.6597, -122.3357);
+        LatLong boston = new LatLong(location.getLattitude(), location.getLongitude());
 
 
         //Set the initial properties of the map.
@@ -95,17 +108,24 @@ public class mapController implements Initializable, MapComponentInitializedList
         MarkerOptions markerOptions5 = new MarkerOptions();
         markerOptions5.position(fredWilkieLocation);
 
+        //test
+        MarkerOptions markerOptions6 = new MarkerOptions();
+        markerOptions6.position(boston);
+
         Marker joeSmithMarker = new Marker(markerOptions1);
         Marker joshAndersonMarker = new Marker(markerOptions2);
         Marker bobUnderwoodMarker = new Marker(markerOptions3);
         Marker tomChoiceMarker = new Marker(markerOptions4);
         Marker fredWilkieMarker = new Marker(markerOptions5);
 
+        Marker bostonMarker = new Marker(markerOptions6);
+
         map.addMarker(joeSmithMarker);
         map.addMarker(joshAndersonMarker);
         map.addMarker(bobUnderwoodMarker);
         map.addMarker(tomChoiceMarker);
         map.addMarker(fredWilkieMarker);
+        map.addMarker(bostonMarker);
 
         InfoWindowOptions infoWindowOptions = new InfoWindowOptions();
         infoWindowOptions.content("<h2>Fred Wilkie</h2>"
@@ -119,18 +139,6 @@ public class mapController implements Initializable, MapComponentInitializedList
     //Joe Silveira
     //Method to populate the combo box with job names and companys
     private void populateSearchBox() {
-        //totalResultsLabel = new Label("Label");
-        gJobNames = dbFunc.getGithubJobNames();
-        stackJobNames = dbFunc.getStackOverFlowJobNames();
-
-        //add github jobs list to all jobs list
-        allJobNames.addAll(gJobNames);
-
-        //add stack overflow jobs to all jobs list
-        allJobNames.addAll(stackJobNames);
-
-        //beautify all jobs array
-        Collections.sort(allJobNames);
 
         //loop to add all jobs to combo box
         for (int i = 0; i < allJobNames.size(); i++) {
@@ -156,5 +164,6 @@ public class mapController implements Initializable, MapComponentInitializedList
     void searchLocationByInput(ActionEvent event) {
 
     }
+
 
 }

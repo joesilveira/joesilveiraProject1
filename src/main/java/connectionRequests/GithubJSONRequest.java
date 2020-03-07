@@ -35,6 +35,36 @@ public class GithubJSONRequest {
     int totalJobs = 0;
 
 
+    public void fetchAllGithubJobs(String api) {
+        int callRequest = 1;
+        int pageNum = 1;
+
+        //Loop to loop through each page until there are less than 50 jobs on page
+        while (callRequest == 1) {
+
+            //Initialize url
+            String url = api + pageNum;
+
+            //Make Request
+            makeGetRequest(url);
+
+            //Progress bar updates
+//            numJobs += http.getNumJobsOnPage();
+//            progressBar.setMinimum(0);
+//            progressBar.setMaximum(numJobs);
+//            for (int i = 0; i < numJobs; i++) {
+//                progressBar.setValue(i);
+//            }
+            pageNum++;
+
+            //Close frame after completion
+            if (getNumJobsOnPage() < 50) {
+                callRequest = 0;
+            }
+
+        }
+    }
+
     //joe silveira
     //Method to ping link and get response from the page
     //The method then takes the json results and adds them to an array list "jobsList"
@@ -159,35 +189,5 @@ public class GithubJSONRequest {
         return jobsList;
     }
 
-    //**********************************Depricated Methods and Variables******************
-
-    //ArrayList<String> jobsTitleList = new ArrayList<String>();
-
-    //joe Silveira
-    //This method takes just the job "title" from the array list of jobs and adds them to the arraylist
-    //"jobsTitleList"
-//    public void addTitleToArray() {
-//        numJobsOnPage = 0;
-//        for (int i = 0; i < jobsList.size(); i++) {
-//            jobsTitleList.add(jobsList.get(i).getTitle());
-//            numJobsOnPage++;
-//            totalJobs++;
-//        }
-//    }
-
-    //joe silveira
-    //this method adds each job title to an array
-//    public void addtoDB() throws SQLException {
-////        //Loop to add jobs to database
-////        for (int i = 0; i < jobsTitleList.size(); i++) {
-////            dbfun.addTitleToJobsDatabaseTable(jobsTitleList.get(i));
-////        }
-////    }
-
-    //Joe Silveira
-    //Method to get jobs title list
-//    public ArrayList<String> getJobsTitleList() {
-//        return this.jobsTitleList;
-//    }
 }
 

@@ -13,17 +13,6 @@ public class StackOverFlowModel {
     String updated;
     String location;
 
-//    public StackOverFlowModel(String guid, String link, String name, String category, String title, String description, String pubDate, String updated, String location) {
-//        this.guid = guid;
-//        this.link = link;
-//        this.name = name;
-//        this.category = category;
-//        this.title = title;
-//        this.description = description;
-//        this.pubDate = pubDate;
-//        this.updated = updated;
-//        this.location = location;
-//    }
 
     public String getGuid() {
         return guid;

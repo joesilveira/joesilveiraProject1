@@ -9,7 +9,6 @@ package fileIO;
 
 import connectionRequests.GithubJSONRequest;
 import dataTypes.GithubModel;
-import controllers.mainScreen;
 
 import javax.swing.*;
 import java.io.BufferedWriter;
@@ -29,39 +28,38 @@ public class FileResource {
     //Java class variables
     JFileChooser fileChooser = new JFileChooser();
     GithubJSONRequest http = new GithubJSONRequest();
-    mainScreen ms = new mainScreen();
     BufferedWriter writer;
     JFrame frame = new JFrame();
 
     //Joe Silveira
     //Method to create file using jfilechooser
-    public void createFile(String fileName) throws IOException {
-        int selected = 1;
-
-        //loop to make sure user selects a directory
-        while (selected == 1) {
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fileChooser.setDialogTitle("Select File Save Location");
-            int result = fileChooser.showDialog(frame, "Choose Directory");
-            if (result == JFileChooser.CANCEL_OPTION) {
-                JOptionPane.showMessageDialog(null, "Please select a directory to save jobs list");
-            } else {
-                selected = 0;
-            }
-        }
-
-        fileDirectory = fileChooser.getSelectedFile().getAbsolutePath();
-        this.userFile = new File(fileDirectory + '\\' + fileName);
-
-        if (this.userFile.exists()) {
-            int clear = ms.askToClearFile();
-            if (clear == 0) {
-                userFile.delete();
-            }
-        }
-        if (this.userFile.createNewFile()) {
-        }
-    }
+//    public void createFile(String fileName) throws IOException {
+//        int selected = 1;
+//
+//        //loop to make sure user selects a directory
+//        while (selected == 1) {
+//            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//            fileChooser.setDialogTitle("Select File Save Location");
+//            int result = fileChooser.showDialog(frame, "Choose Directory");
+//            if (result == JFileChooser.CANCEL_OPTION) {
+//                JOptionPane.showMessageDialog(null, "Please select a directory to save jobs list");
+//            } else {
+//                selected = 0;
+//            }
+//        }
+//
+//        fileDirectory = fileChooser.getSelectedFile().getAbsolutePath();
+//        this.userFile = new File(fileDirectory + '\\' + fileName);
+//
+//        if (this.userFile.exists()) {
+//            int clear = ms.askToClearFile();
+//            if (clear == 0) {
+//                userFile.delete();
+//            }
+//        }
+//        if (this.userFile.createNewFile()) {
+//        }
+//    }
 
     //Joe Silveira
     //Method to create file in program for testing purposes

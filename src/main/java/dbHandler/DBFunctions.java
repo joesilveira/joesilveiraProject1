@@ -55,33 +55,6 @@ public class DBFunctions {
         }
     }
 
-    //Joe Silveira
-    //Method to add column to a database Table
-    public void addColumn(String tableName, String columnName, String columnDataType) {
-
-        //Call connect to database to create connection
-        conn = connectToDatabase();
-
-        //SQL statement for creating new column
-        String sql = "alter table " + tableName + "\n" + "\nadd " + columnName + " " + columnDataType;
-
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    //Joe Silveira
-    //General method to add row to a database table
-    public void addRow(String tableName, String sql) {
-        //Call DB Connection
-        conn = connectToDatabase();
-
-        //SQL statement
-        sql = "insert into ";
-    }
 
     public void addJobToStackOverFlowTable(String guid, String link, String name, String category, String title, String description,
                                            String pubDate, String updated, String location) {
@@ -89,23 +62,28 @@ public class DBFunctions {
 
 
         try {
-            String sqlStatement = "INSERT INTO StackOverFlowJobs(guid,link,name,category,title,description," +
-                    "pubDate,updated,location,insertion_time) VALUES(?,?,?,?,?,?,?,?,?,?)";
-            PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
+
+            boolean jobExists = checkExistsInDB("guid", "StackOverFlowJobs", guid);
+
+            if (!jobExists) {
+
+                String sqlStatement = "INSERT INTO StackOverFlowJobs(guid,link,name,category,title,description," +
+                        "pubDate,updated,location,insertion_time) VALUES(?,?,?,?,?,?,?,?,?,?)";
+                PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
 
 
-            pStatement.setString(1, guid);
-            pStatement.setString(2, link);
-            pStatement.setString(3, name);
-            pStatement.setString(4, category);
-            pStatement.setString(5, title);
-            pStatement.setString(6, description);
-            pStatement.setString(7, pubDate);
-            pStatement.setString(8, updated);
-            pStatement.setString(9, location);
-            pStatement.setString(10, LocalDateTime.now().toString());
-            pStatement.execute();
-
+                pStatement.setString(1, guid);
+                pStatement.setString(2, link);
+                pStatement.setString(3, name);
+                pStatement.setString(4, category);
+                pStatement.setString(5, title);
+                pStatement.setString(6, description);
+                pStatement.setString(7, pubDate);
+                pStatement.setString(8, updated);
+                pStatement.setString(9, location);
+                pStatement.setString(10, LocalDateTime.now().toString());
+                pStatement.execute();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,9 +93,8 @@ public class DBFunctions {
 
     //Joe silveira
     //Method to add job full parameters to database
-    //Not used in project 2
     public void addJobToGithubJobsTable(String jobID, String jobType, String gitHub_Url, String job_Created_TimeStamp, String company, String company_url,
-                                        String job_location, String job_title, String job_description, String how_to_apply, String company_logo) {
+                                        String job_location, String job_title, String job_description, String how_to_apply, String company_logo) throws SQLException {
 
 
         int allValid = 0;
@@ -146,27 +123,33 @@ public class DBFunctions {
             conn = connectToDatabase();
 
             try {
-                String sqlStatement = "INSERT INTO Jobs(jobID,jobType,gitHub_Url,job_Created_TimeStamp,company,company_url,job_Location," +
-                        "job_title,job_description,how_to_apply,company_logo,insertion_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
-                PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
-                pStatement.setString(1, jobID);
-                pStatement.setString(2, jobType);
-                pStatement.setString(3, gitHub_Url);
-                pStatement.setString(4, job_Created_TimeStamp);
-                pStatement.setString(5, company);
-                pStatement.setString(6, company_url);
-                pStatement.setString(7, job_location);
-                pStatement.setString(8, job_title);
-                pStatement.setString(9, job_description);
-                pStatement.setString(10, how_to_apply);
-                pStatement.setString(11, company_logo);
-                pStatement.setString(12, LocalDateTime.now().toString());
-                pStatement.execute();
+
+                boolean jobExists = checkExistsInDB("jobID", "Jobs", jobID);
+
+                if (!jobExists) {
+
+                    String sqlStatement = "INSERT INTO Jobs(jobID,jobType,gitHub_Url,job_Created_TimeStamp,company,company_url,job_Location," +
+                            "job_title,job_description,how_to_apply,company_logo,insertion_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+                    PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
+                    pStatement.setString(1, jobID);
+                    pStatement.setString(2, jobType);
+                    pStatement.setString(3, gitHub_Url);
+                    pStatement.setString(4, job_Created_TimeStamp);
+                    pStatement.setString(5, company);
+                    pStatement.setString(6, company_url);
+                    pStatement.setString(7, job_location);
+                    pStatement.setString(8, job_title);
+                    pStatement.setString(9, job_description);
+                    pStatement.setString(10, how_to_apply);
+                    pStatement.setString(11, company_logo);
+                    pStatement.setString(12, LocalDateTime.now().toString());
+                    pStatement.execute();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
 
+        }
     }
 
 
@@ -302,7 +285,54 @@ public class DBFunctions {
         return contains;
     }
 
+    //Method to check if a value exists in the database
+    private boolean checkExistsInDB(String columnName, String tableName, String checkString) throws SQLException {
 
+        conn = connectToDatabase();
+        String sql = "SELECT * FROM $tableName WHERE $columnName = ?";
+
+        sql = sql.replace("$tableName", tableName);
+        sql = sql.replace("$columnName", columnName);
+
+        boolean jobExists = false;
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, checkString);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            System.out.println("Value Exists in Database");
+            jobExists = true;
+        } else {
+            System.out.println("New Value Added to Database");
+        }
+
+        return jobExists;
+
+    }
+
+    public boolean checkEmptyTable(String tableName) throws SQLException {
+        boolean empty = true;
+
+        conn = connectToDatabase();
+        String sql = "SELECT * FROM $tableName";
+
+        sql = sql.replace("$tableName", tableName);
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            System.out.println("Table is not empty");
+            empty = false;
+        } else {
+            System.out.println("Table is empty");
+        }
+
+        return empty;
+    }
     //********************Striclty Used for testing purposes*************
 
     //Joe Silveira

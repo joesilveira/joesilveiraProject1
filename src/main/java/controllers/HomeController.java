@@ -1,5 +1,6 @@
 package controllers;
 
+import dbHandler.DBFunctions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,9 +35,17 @@ public class HomeController implements Initializable {
     private AnchorPane sceneViewPane;
 
 
+    DBFunctions dbFunc = new DBFunctions();
+    boolean buttonsDisabled = true;
+    private startViewController svc = new startViewController();
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        if (svc.jobsExist) {
+            search_button.setDisable(true);
+            viewTable_button.setDisable(true);
+        }
     }
 
     @FXML
@@ -81,6 +89,5 @@ public class HomeController implements Initializable {
         stage.sizeToScene();
         stage.centerOnScreen();
     }
-
 
 }

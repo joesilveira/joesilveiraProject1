@@ -1,9 +1,7 @@
 package controllers;
 
 import dataTypes.AllJobsModel;
-import dataTypes.GithubModel;
-import dataTypes.StackOverFlowModel;
-import dbHandler.DBFunctions;
+import dbHandler.Jobfunctions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,9 +15,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class JobDisplayController implements Initializable {
@@ -58,23 +54,12 @@ public class JobDisplayController implements Initializable {
     private Button next_Button;
 
     private int i = 0;
-    ArrayList<AllJobsModel> allJobs = new ArrayList<AllJobsModel>();
-    ArrayList<GithubModel> gJobs = new ArrayList<>();
-    ArrayList<StackOverFlowModel> stackJobs = new ArrayList<>();
-
-    DBFunctions dbFunc = new DBFunctions();
+    private Jobfunctions jobFunctions = new Jobfunctions();
+    ArrayList<AllJobsModel> allJobs = new ArrayList<>();
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            previous_Button.setDisable(true);
-            loadJobs();
-            initFields();
-        } catch (SQLException | MalformedURLException e) {
-            e.printStackTrace();
-        }
-        System.out.println(allJobs.size());
 
     }
 
@@ -129,43 +114,6 @@ public class JobDisplayController implements Initializable {
         }
     }
 
-    private void loadGitHubJobs() throws SQLException {
-
-        gJobs = dbFunc.getGithubDBjobs();
-
-        for (GithubModel gJob : gJobs) {
-            AllJobsModel job = new AllJobsModel(gJob.getTitle(), gJob.getType(), gJob.getCompany(),
-                    gJob.getLocation(), gJob.getCompany_url(), gJob.getDescription(),
-                    gJob.getHow_to_apply());
-            allJobs.add(job);
-        }
-    }
-
-    private void loadStackJobs() {
-        stackJobs = dbFunc.getStackJobs();
-
-//        for (int i = 0; i < stackJobs.size(); i++) {
-//            System.out.println(stackJobs.get(i).getTitle());
-//
-//        }
-
-        for (StackOverFlowModel stackJob : stackJobs) {
-            AllJobsModel job = new AllJobsModel(stackJob.getTitle(), stackJob.getCategory(), stackJob.getName(), stackJob.getLocation(),
-                    stackJob.getLink(), stackJob.getDescription(), "Apply Online");
-            allJobs.add(job);
-
-        }
-    }
-
-    public void loadJobs() throws SQLException {
-        loadStackJobs();
-        loadGitHubJobs();
-        Collections.sort(allJobs);
-
-//        for(int i = 0; i < allJobs.size(); i++){
-//            System.out.println(allJobs.get(i).getJobTitle());
-//        }
-    }
 
     private void initFields() throws MalformedURLException {
         grid_jobTitle.setText(allJobs.get(i).getJobTitle());

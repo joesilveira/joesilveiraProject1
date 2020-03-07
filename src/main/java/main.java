@@ -6,20 +6,19 @@
     for the program to run
  */
 
+import dbHandler.DatabaseHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import runner.runtimeHandler;
 
 public class main extends Application {
 
 
     public static void main(String[] args) throws Exception {
-
-        runtimeHandler handler = new runtimeHandler();
-        handler.startProgram();
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        dbHandler.initAllTables();
         launch(args);
     }
 

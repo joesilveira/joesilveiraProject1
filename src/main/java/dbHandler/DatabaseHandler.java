@@ -9,6 +9,12 @@ public class DatabaseHandler {
     DBFunctions dbFunc = new DBFunctions();
     ArrayList<String> jobTableColumns = new ArrayList<>();
 
+    public void initAllTables() throws SQLException {
+        initStackOverFLowJobsTable();
+        initGeocodeTable();
+        initGitHubJobsTable();
+    }
+
     //Joe silveira
     //Method to initialize the database with a table and all job paramaters
     public void initGitHubJobsTable() throws SQLException {
@@ -38,6 +44,13 @@ public class DatabaseHandler {
         dbFunc.createTable("StackOverFlowJobs", sql);
     }
 
+
+    public void initGeocodeTable() throws SQLException {
+        //Instantiate Table
+        String sql = "city string," + "\n" + "lat int," + "\n" + "long int," + "\n" + "insertion_time string";
+
+        dbFunc.createTable("geocodes", sql);
+    }
 
     //Joe Silveira
     //Method to initialize array list with all job parameters
