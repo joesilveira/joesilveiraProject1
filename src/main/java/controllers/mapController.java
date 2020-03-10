@@ -3,21 +3,33 @@ package controllers;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.JavascriptObject;
+import com.lynden.gmapsfx.javascript.event.UIEventHandler;
+import com.lynden.gmapsfx.javascript.event.UIEventType;
 import com.lynden.gmapsfx.javascript.object.*;
 import com.lynden.gmapsfx.service.geocoding.GeocodingService;
 import com.lynden.gmapsfx.service.geocoding.GeocodingServiceCallback;
 import connectionRequests.GeoCoding;
+import dataTypes.AllJobsModel;
+import dataTypes.GeoCodeModel;
 import dbHandler.DBFunctions;
+import dbHandler.Jobfunctions;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
+import netscape.javascript.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -44,6 +56,15 @@ public class mapController extends JavascriptObject implements Initializable, Ma
 
     private GoogleMap map;
 
+    @FXML
+    private ProgressIndicator progressIndicator;
+
+    @FXML
+    private Text progressPaneLabel;
+
+    @FXML
+    private AnchorPane progressPane;
+
     //Arrays for job names
     ArrayList<String> gJobNames = new ArrayList<>();
     ArrayList<String> stackJobNames = new ArrayList<>();
@@ -51,36 +72,64 @@ public class mapController extends JavascriptObject implements Initializable, Ma
 
     //Arrays for job locations
 
-    ArrayList<String> gJobsLocations = new ArrayList<>();
-    ArrayList<String> stackJobLocations = new ArrayList<>();
-    ArrayList<String> allJobLocations = new ArrayList<>();
+    ArrayList<GeoCodeModel> geoCodes = new ArrayList<>();
+    ArrayList<AllJobsModel> allJobs = new ArrayList<>();
+    ArrayList<Marker> markers = new ArrayList<>();
 
     private DBFunctions dbFunc = new DBFunctions();
+    Jobfunctions jobFun = new Jobfunctions();
     private GeoCoding location = new GeoCoding();
     String geoCode = "http://www.mapquestapi.com/geocoding/v1/address?key=xGA2gfYEJmplL7GrATFYpONUR1dGkPxx&location=1600+Pennsylvania+Ave+NW,Washington,DC,20500";
-
+    private UIEventHandler EventHandler;
+    private Object MouseEvent;
+    Thread thread;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        gMap.addMapInializedListener(this);
-        populateSearchBox();
+        //populateSearchBox();
+        System.out.println("loading Geo Codes");
+        try {
+            loadJobsAndGeoCodes(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public void mapInitialized() {
-        location.geoCode(geoCode);
-        LatLong joeSmithLocation = new LatLong(47.6197, -122.3231);
-        LatLong joshAndersonLocation = new LatLong(47.6297, -122.3431);
-        LatLong bobUnderwoodLocation = new LatLong(47.6397, -122.3031);
-        LatLong tomChoiceLocation = new LatLong(47.6497, -122.3325);
-        LatLong fredWilkieLocation = new LatLong(47.6597, -122.3357);
-        LatLong boston = new LatLong(location.getLattitude(), location.getLongitude());
+
+        int c = 0;
+        for (int i = 0; i < allJobs.size(); i++) {
+            for (GeoCodeModel code : geoCodes) {
+                String location = allJobs.get(i).getJobLocation();
+                location = location.replace(" ", "");
+
+                if (location.contains("|")) {
+                    location = location.substring(0, location.indexOf("|"));
+                }
+                if (location.contains(code.getCity())) {
+                    c = i;
+
+                    LatLong geo = new LatLong(Double.parseDouble(code.getLat()), Double.parseDouble(code.getLng()));
+
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(geo);
+                    markerOptions.title(allJobs.get(i).getJobTitle());
+                    markerOptions.label(allJobs.get(i).getJobTitle());
+
+
+                    Marker marker = new Marker(markerOptions);
+
+                    markers.add(marker);
+
+                }
+            }
+        }
 
 
         //Set the initial properties of the map.
         MapOptions mapOptions = new MapOptions();
-
         mapOptions.center(new LatLong(47.6097, -122.3331))
                 .overviewMapControl(false)
                 .panControl(false)
@@ -88,52 +137,32 @@ public class mapController extends JavascriptObject implements Initializable, Ma
                 .scaleControl(false)
                 .streetViewControl(false)
                 .zoomControl(false)
-                .zoom(12);
+                .zoom(2);
 
         map = gMap.createMap(mapOptions);
 
-        //Add markers to the map
-        MarkerOptions markerOptions1 = new MarkerOptions();
-        markerOptions1.position(joeSmithLocation);
 
-        MarkerOptions markerOptions2 = new MarkerOptions();
-        markerOptions2.position(joshAndersonLocation);
+        for (int i = 0; i < markers.size(); i++) {
+            map.addMarker(markers.get(i));
+            markers.get(i).getJSObject();
+            int finalI = i;
+            map.addUIEventHandler(markers.get(i), UIEventType.click, new UIEventHandler() {
+                @Override
+                public void handle(JSObject obj) {
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    try {
+                        InfoWindowOptions infoWindowOptions = new InfoWindowOptions();
+                        infoWindowOptions.content("<h2>" + allJobs.get(finalI).getJobTitle() + "</h2>" +
+                                allJobs.get(finalI).getJobCompany());
+                        com.lynden.gmapsfx.javascript.object.InfoWindow infoWindow = new InfoWindow(infoWindowOptions);
+                        infoWindow.open(map, markers.get(finalI));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
-        MarkerOptions markerOptions3 = new MarkerOptions();
-        markerOptions3.position(bobUnderwoodLocation);
-
-        MarkerOptions markerOptions4 = new MarkerOptions();
-        markerOptions4.position(tomChoiceLocation);
-
-        MarkerOptions markerOptions5 = new MarkerOptions();
-        markerOptions5.position(fredWilkieLocation);
-
-        //test
-        MarkerOptions markerOptions6 = new MarkerOptions();
-        markerOptions6.position(boston);
-
-        Marker joeSmithMarker = new Marker(markerOptions1);
-        Marker joshAndersonMarker = new Marker(markerOptions2);
-        Marker bobUnderwoodMarker = new Marker(markerOptions3);
-        Marker tomChoiceMarker = new Marker(markerOptions4);
-        Marker fredWilkieMarker = new Marker(markerOptions5);
-
-        Marker bostonMarker = new Marker(markerOptions6);
-
-        map.addMarker(joeSmithMarker);
-        map.addMarker(joshAndersonMarker);
-        map.addMarker(bobUnderwoodMarker);
-        map.addMarker(tomChoiceMarker);
-        map.addMarker(fredWilkieMarker);
-        map.addMarker(bostonMarker);
-
-        InfoWindowOptions infoWindowOptions = new InfoWindowOptions();
-        infoWindowOptions.content("<h2>Fred Wilkie</h2>"
-                + "Current Location: Safeway<br>"
-                + "ETA: 45 minutes");
-
-        com.lynden.gmapsfx.javascript.object.InfoWindow fredWilkeInfoWindow = new InfoWindow(infoWindowOptions);
-        fredWilkeInfoWindow.open(map, fredWilkieMarker);
+            });
+        }
     }
 
     //Joe Silveira
@@ -165,5 +194,35 @@ public class mapController extends JavascriptObject implements Initializable, Ma
 
     }
 
+    private void loadJobsAndGeoCodes(MapComponentInitializedListener listener) throws SQLException {
+        Thread thread;
+        progressPane.setVisible(true);
+
+        Task task = new Task<Void>() {
+            @Override
+            public Void call() throws IOException, XMLStreamException, SQLException {
+                progressPaneLabel.setText("Loading Jobs and GeoCodes From Database. Please Wait...");
+                geoCodes = dbFunc.getGeoCodes();
+                allJobs = jobFun.getArrayOfJobs();
+                progressPaneLabel.setText("Loading Map view. Please Wait...");
+                gMap.addMapInializedListener(listener);
+                return null;
+            }
+
+        };
+
+        task.setOnSucceeded(event1 -> {
+            System.out.println("Done");
+            progressIndicator.progressProperty().unbind();
+            progressIndicator.setProgress(100);
+            progressPane.setVisible(false);
+            gMap.setVisible(true);
+
+        });
+        progressIndicator.progressProperty().bind(task.progressProperty());
+        thread = new Thread(task);
+        thread.start();
+    }
 
 }
+

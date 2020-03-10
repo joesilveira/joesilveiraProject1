@@ -34,6 +34,12 @@ public class GithubJSONRequest {
     int numJobsOnPage = 0;
     int totalJobs = 0;
 
+    public int getRecordAdded() {
+        return recordAdded;
+    }
+
+    int recordAdded = 0;
+
 
     public void fetchAllGithubJobs(String api) {
         int callRequest = 1;
@@ -128,6 +134,7 @@ public class GithubJSONRequest {
                         GithubModel.getCreated_at(), GithubModel.getCompany(), GithubModel.getCompany_url(),
                         GithubModel.getLocation(), GithubModel.getTitle(), GithubModel.getDescription(),
                         GithubModel.getHow_to_apply(), GithubModel.getCompany_logo());
+                recordAdded++;
             } catch (Exception e) {
                 e.printStackTrace();
                 e.getCause();

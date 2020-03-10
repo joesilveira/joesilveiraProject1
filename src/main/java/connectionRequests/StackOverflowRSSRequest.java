@@ -12,12 +12,19 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 
 public class StackOverflowRSSRequest {
 
     //Java Class Variables
     URL url;
+
+    public int getRecordAdded() {
+        return recordAdded;
+    }
+
+    int recordAdded = 0;
 
 
     //Class Variables
@@ -210,11 +217,12 @@ public class StackOverflowRSSRequest {
 
     //Joe Silveira
     //Method to add all jobs to the database
-    public void addJobsToDB(List<StackOverFlowModel> jobs) {
+    public void addJobsToDB(List<StackOverFlowModel> jobs) throws SQLException {
         for (int i = 0; i < jobs.size(); i++) {
             dbFunc.addJobToStackOverFlowTable(jobs.get(i).getGuid(), jobs.get(i).getLink(), jobs.get(i).getName(),
                     jobs.get(i).getCategory(), jobs.get(i).getTitle(), jobs.get(i).getDescription(), jobs.get(i).getPubDate(),
                     jobs.get(i).getUpdated(), jobs.get(i).getLocation());
+            recordAdded++;
             //System.out.println("Job Added to DB");
         }
     }

@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import runner.runtimeHandler;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,11 +26,15 @@ public class startViewController implements Initializable {
 
     private DBFunctions dbFunc = new DBFunctions();
 
-    public boolean isJobsExist() {
-        return jobsExist;
+    public runtimeHandler getHandler() {
+        return handler;
     }
 
-    boolean jobsExist = true;
+    public void setHandler(runtimeHandler handler) {
+        this.handler = handler;
+    }
+
+    runtimeHandler handler = new runtimeHandler();
 
 
     @Override
@@ -41,7 +46,6 @@ public class startViewController implements Initializable {
     @FXML
     void launchStartView(ActionEvent event) throws IOException, SQLException {
         if (dbFunc.checkEmptyTable("Jobs") || dbFunc.checkEmptyTable("StackOverFlowJobs")) {
-            jobsExist = false;
             Alert a = new Alert(Alert.AlertType.INFORMATION);
             a.setContentText("No Jobs Exist in the Database. Please Run Tasks");
             a.show();

@@ -6,6 +6,7 @@
     for the program to run
  */
 
+import dbHandler.DBFunctions;
 import dbHandler.DatabaseHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,9 @@ public class main extends Application {
     public static void main(String[] args) throws Exception {
         DatabaseHandler dbHandler = new DatabaseHandler();
         dbHandler.initAllTables();
+        DBFunctions dbFunc = new DBFunctions();
+        //dbFunc.addJobLatLng("My City",100.00,100);
+        //dbFunc.checkLocationExistsInDB("RocklandMA", 10.20, 11.00, "geocodes");
         launch(args);
     }
 

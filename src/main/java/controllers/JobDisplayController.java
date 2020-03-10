@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -60,7 +61,12 @@ public class JobDisplayController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        try {
+            allJobs = jobFunctions.getArrayOfJobs();
+            initFields();
+        } catch (SQLException | MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

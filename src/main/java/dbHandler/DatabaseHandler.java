@@ -47,7 +47,7 @@ public class DatabaseHandler {
 
     public void initGeocodeTable() throws SQLException {
         //Instantiate Table
-        String sql = "city string," + "\n" + "lat int," + "\n" + "long int," + "\n" + "insertion_time string";
+        String sql = "city string," + "\n" + "lat string," + "\n" + "lng string," + "\n" + "insertion_time string";
 
         dbFunc.createTable("geocodes", sql);
     }

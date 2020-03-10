@@ -8,6 +8,24 @@ public class runtimeHandler {
     int openFile = 0;
     File userFile;
     File programFile;
+
+
+    public String getApi() {
+        return api;
+    }
+
+    public void setApi(String api) {
+        this.api = api;
+    }
+
+    public String getRssUrl() {
+        return rssUrl;
+    }
+
+    public void setRssUrl(String rssUrl) {
+        this.rssUrl = rssUrl;
+    }
+
     String api = "https://jobs.github.com/positions.json?page=";
     String rssUrl = "https://stackoverflow.com/jobs/feed";
     String geoCode = "http://www.mapquestapi.com/geocoding/v1/address?key=xGA2gfYEJmplL7GrATFYpONUR1dGkPxx&location=1600+Pennsylvania+Ave+NW,Washington,DC,20500";

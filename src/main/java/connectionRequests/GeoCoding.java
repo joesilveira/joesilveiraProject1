@@ -13,40 +13,41 @@ public class GeoCoding {
 
     HttpClient client;
 
-    public double getLattitude() {
+    public String getLattitude() {
         return lattitude;
     }
 
-    public void setLattitude(double lattitude) {
+    public void setLattitude(String lattitude) {
         this.lattitude = lattitude;
     }
 
-    public double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
-    private double lattitude = 0;
-    private double longitude = 0;
+    private String lattitude;
+    private String longitude;
 
     public void geoCode(String location) {
+        String geoCode = "http://www.mapquestapi.com/geocoding/v1/address?key=sRDKetLp46KDBGODAHK12sFf4LPYftl2&location=" + location;
+        //System.out.println(geoCode);
         try {
 
             //Instantiate Connection
             client = HttpClient.newHttpClient();
             var requestBuilder = HttpRequest.newBuilder();
-            var dataRequest = requestBuilder.uri(URI.create(location)).build();
+            var dataRequest = requestBuilder.uri(URI.create(geoCode)).build();
 
             //Handle HTTP Response
             HttpResponse<String> response;
             response = client.send(dataRequest, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
-                JOptionPane.showMessageDialog(null, "No connection! Try Again!");
-                System.exit(0);
+                JOptionPane.showMessageDialog(null, "Exceeded Monthly Limit of Transactions!");
             }
 
             var body = response.body();
@@ -67,8 +68,8 @@ public class GeoCoding {
         String lng = latLong.substring(latLong.lastIndexOf(":"));
         lng = lng.replace(":", "");
 
-        lattitude = Double.parseDouble(lat);
-        longitude = Double.parseDouble(lng);
+        lattitude = lat;
+        longitude = lng;
 
     }
 }

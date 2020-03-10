@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class HomeController implements Initializable {
@@ -24,6 +25,38 @@ public class HomeController implements Initializable {
 
     @FXML
     private Button search_button;
+
+    public Button getViewTable_button() {
+        return viewTable_button;
+    }
+
+    public void setViewTable_button(Button viewTable_button) {
+        this.viewTable_button = viewTable_button;
+    }
+
+    public Button getSearch_button() {
+        return search_button;
+    }
+
+    public void setSearch_button(Button search_button) {
+        this.search_button = search_button;
+    }
+
+    public Button getTasks_button() {
+        return tasks_button;
+    }
+
+    public void setTasks_button(Button tasks_button) {
+        this.tasks_button = tasks_button;
+    }
+
+    public Button getHome_button() {
+        return home_button;
+    }
+
+    public void setHome_button(Button home_button) {
+        this.home_button = home_button;
+    }
 
     @FXML
     private Button tasks_button;
@@ -42,9 +75,13 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (svc.jobsExist) {
-            search_button.setDisable(true);
-            viewTable_button.setDisable(true);
+        try {
+            if (dbFunc.checkEmptyTable("Jobs") || dbFunc.checkEmptyTable("StackOverFlowJobs")) {
+                search_button.setDisable(true);
+                viewTable_button.setDisable(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

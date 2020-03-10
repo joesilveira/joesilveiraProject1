@@ -1,5 +1,6 @@
 package dbHandler;
 
+import dataTypes.GeoCodeModel;
 import dataTypes.GithubModel;
 import dataTypes.StackOverFlowModel;
 
@@ -53,23 +54,24 @@ public class DBFunctions {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        conn.close();
     }
 
 
     public void addJobToStackOverFlowTable(String guid, String link, String name, String category, String title, String description,
-                                           String pubDate, String updated, String location) {
+                                           String pubDate, String updated, String location) throws SQLException {
         conn = connectToDatabase();
 
 
         try {
 
-            boolean jobExists = checkExistsInDB("guid", "StackOverFlowJobs", guid);
+            boolean jobExists = checkJobExistsInDB("guid", "StackOverFlowJobs", guid);
 
             if (!jobExists) {
 
                 String sqlStatement = "INSERT INTO StackOverFlowJobs(guid,link,name,category,title,description," +
                         "pubDate,updated,location,insertion_time) VALUES(?,?,?,?,?,?,?,?,?,?)";
-                PreparedStatement pStatement = conn.prepareStatement(sqlStatement);
+                PreparedStatement pStatement = this.conn.prepareStatement(sqlStatement);
 
 
                 pStatement.setString(1, guid);
@@ -87,7 +89,7 @@ public class DBFunctions {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        conn.close();
     }
 
 
@@ -124,7 +126,7 @@ public class DBFunctions {
 
             try {
 
-                boolean jobExists = checkExistsInDB("jobID", "Jobs", jobID);
+                boolean jobExists = checkJobExistsInDB("jobID", "Jobs", jobID);
 
                 if (!jobExists) {
 
@@ -150,12 +152,13 @@ public class DBFunctions {
             }
 
         }
+        conn.close();
     }
 
 
     //Joe Silveira
     //Method to return job names and company from database
-    public ArrayList<String> getGithubJobNames() {
+    public ArrayList<String> getGithubJobNames() throws SQLException {
         conn = connectToDatabase();
         ArrayList<String> data = new ArrayList<String>();
         String sql = "SELECT * FROM Jobs";
@@ -175,12 +178,13 @@ public class DBFunctions {
 
         }
 
+        conn.close();
         return data;
     }
 
     //Joe Silveira
     //Method to return job names and company from database
-    public ArrayList<String> getStackOverFlowJobNames() {
+    public ArrayList<String> getStackOverFlowJobNames() throws SQLException {
         conn = connectToDatabase();
         ArrayList<String> data = new ArrayList<String>();
         String sql = "SELECT * FROM StackOverFlowJobs";
@@ -200,6 +204,7 @@ public class DBFunctions {
 
         }
 
+        conn.close();
         return data;
     }
 
@@ -238,10 +243,11 @@ public class DBFunctions {
 //            System.out.println(jobs.get(i).toString());
 //        }
 
+        conn.close();
         return jobs;
     }
 
-    public ArrayList<StackOverFlowModel> getStackJobs() {
+    public ArrayList<StackOverFlowModel> getStackJobs() throws SQLException {
         ArrayList<StackOverFlowModel> stackJobs = new ArrayList<>();
 
         conn = connectToDatabase();
@@ -266,8 +272,54 @@ public class DBFunctions {
         } catch (Exception e) {
 
         }
-
+        conn.close();
         return stackJobs;
+    }
+
+    public ArrayList<GeoCodeModel> getGeoCodes() throws SQLException {
+        ArrayList<GeoCodeModel> geoCodes = new ArrayList<>();
+
+        conn = connectToDatabase();
+        String sql = "SELECT * FROM geocodes";
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+
+                GeoCodeModel geoCode = new GeoCodeModel();
+                geoCode.setCity(rs.getString("city"));
+                geoCode.setLat(rs.getString("lat"));
+                geoCode.setLng(rs.getString("lng"));
+                geoCodes.add(geoCode);
+            }
+
+        } catch (Exception e) {
+
+        }
+        conn.close();
+        return geoCodes;
+    }
+
+    public void addJobLatLng(String city, String lat, String lng) throws SQLException {
+        conn = connectToDatabase();
+        boolean locExists = checkLocationExistsInDB(city, lat, lng, "geocodes");
+
+        try {
+            if (!locExists) {
+                String sqlStatement = "INSERT INTO geocodes(city,lat,lng,insertion_time) VALUES(?,?,?,?)";
+                PreparedStatement pStatement = this.conn.prepareStatement(sqlStatement);
+                pStatement.setString(1, city);
+                pStatement.setString(2, lat);
+                pStatement.setString(3, lng);
+                pStatement.setString(4, LocalDateTime.now().toString());
+                pStatement.execute();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        conn.close();
     }
 
 
@@ -286,9 +338,8 @@ public class DBFunctions {
     }
 
     //Method to check if a value exists in the database
-    private boolean checkExistsInDB(String columnName, String tableName, String checkString) throws SQLException {
+    private boolean checkJobExistsInDB(String columnName, String tableName, String checkString) throws SQLException {
 
-        conn = connectToDatabase();
         String sql = "SELECT * FROM $tableName WHERE $columnName = ?";
 
         sql = sql.replace("$tableName", tableName);
@@ -296,18 +347,83 @@ public class DBFunctions {
 
         boolean jobExists = false;
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
+        PreparedStatement stmt = this.conn.prepareStatement(sql);
         stmt.setString(1, checkString);
 
         ResultSet rs = stmt.executeQuery();
 
         if (rs.next()) {
-            System.out.println("Value Exists in Database");
+            //System.out.println("Value Exists in Database");
             jobExists = true;
-        } else {
-            System.out.println("New Value Added to Database");
+        }
+        //System.out.println("New Value Added to Database");
+
+
+        return jobExists;
+
+    }
+
+    public boolean checkLocationExistsInDB(String city, String lat, String lng, String tableName) throws SQLException {
+
+        boolean jobExists = false;
+
+        try {
+            String sql = "SELECT city, lat, lng FROM $tableName WHERE city = ? AND lat = ? AND lng = ?";
+
+            sql = sql.replace("$tableName", tableName);
+//            sql = sql.replace("$city", city);
+//            sql = sql.replace("$lat", Double.toString(lat));
+//            sql = sql.replace("$lng", Double.toString(lng));
+
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+            stmt.setString(1, city);
+            stmt.setString(2, lat);
+            stmt.setString(3, lng);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                //System.out.println("Value Exists in Database");
+                jobExists = true;
+            } else {
+                //System.out.println("New Value Added to Database");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        return jobExists;
+
+    }
+
+    public boolean checkLocationExistsInDB(String city, String tableName) throws SQLException {
+        conn = connectToDatabase();
+        boolean jobExists = false;
+
+        try {
+            String sql = "SELECT city FROM $tableName WHERE city = ?";
+
+            sql = sql.replace("$tableName", tableName);
+//            sql = sql.replace("$city", city);
+//            sql = sql.replace("$lat", Double.toString(lat));
+//            sql = sql.replace("$lng", Double.toString(lng));
+
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+            stmt.setString(1, city);
+
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                //System.out.println("Value Exists in Database");
+                jobExists = true;
+            } else {
+                //System.out.println("New Value Added to Database");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        conn.close();
         return jobExists;
 
     }
@@ -325,12 +441,13 @@ public class DBFunctions {
         ResultSet rs = stmt.executeQuery();
 
         if (rs.next()) {
-            System.out.println("Table is not empty");
+            //System.out.println("Table is not empty");
             empty = false;
         } else {
-            System.out.println("Table is empty");
+            //System.out.println("Table is empty");
         }
 
+        conn.close();
         return empty;
     }
     //********************Striclty Used for testing purposes*************
