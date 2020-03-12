@@ -1,7 +1,9 @@
 # Joe Silveira
 
-
 To run the program....Run from gradle-> application -> "Run"
+*Required*
+Java 11+
+
 
 This project allows us to ping the github jobs api and stack overflow jobs api and write the jobs to a databse.
 
