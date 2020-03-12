@@ -1,6 +1,6 @@
 # Joe Silveira
 
-To run the program....Run from gradle-> application -> "Run"
+To run the program....Run from gradle-> Tasks -> application -> "Run"
 *Required*
 Java 11+
 
