@@ -20,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import netscape.javascript.JSObject;
@@ -59,6 +60,9 @@ public class mapController extends JavascriptObject implements Initializable, Ma
     private ComboBox<String> titleSearch;
 
     @FXML
+    private ComboBox<String> distanceFromComboBox;
+
+    @FXML
     private GoogleMapView gMap;
 
     @FXML
@@ -82,10 +86,14 @@ public class mapController extends JavascriptObject implements Initializable, Ma
 
     //Arrays for job locations
 
+    @FXML
+    private TextField locationEntry;
+
     ArrayList<GeoCodeModel> geoCodes = new ArrayList<>();
     ArrayList<AllJobsModel> allJobs = new ArrayList<>();
     ArrayList<Marker> markers = new ArrayList<>();
     ArrayList<String> dates = new ArrayList<>();
+    ArrayList<String> distances = new ArrayList<>();
     LocalDate endDate;
     String typeSelected;
     Period daysBefore = Period.ofDays(0);
@@ -97,6 +105,11 @@ public class mapController extends JavascriptObject implements Initializable, Ma
     String geoCode = "http://www.mapquestapi.com/geocoding/v1/address?key=xGA2gfYEJmplL7GrATFYpONUR1dGkPxx&location=1600+Pennsylvania+Ave+NW,Washington,DC,20500";
     private UIEventHandler EventHandler;
     private Object MouseEvent;
+    int value;
+    double jDistance;
+
+    public mapController() {
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -194,7 +207,11 @@ public class mapController extends JavascriptObject implements Initializable, Ma
             String dateIn = allJob.getPubDate();
             LocalDate jobPubDate = LocalDate.parse(dateIn, formatter);
 
-            if (searchByDate.getValue() != null) {
+            if (combo_JobType.getValue() != null && distanceFromComboBox.getValue() != null) {
+                if (allJob.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate)) && jDistance < value) {
+                    addMarker(allJob);
+                }
+            } else if (combo_JobType.getValue() != null) {
                 if (allJob.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate))) {
                     addMarker(allJob);
                 }
@@ -206,6 +223,11 @@ public class mapController extends JavascriptObject implements Initializable, Ma
 
         createMarkers(markers);
         totalResultsLabel.setText("Showing " + markers.size() + " On Map");
+    }
+
+    @FXML
+    void getLocationEntry(ActionEvent event) {
+
     }
 
 
@@ -224,7 +246,11 @@ public class mapController extends JavascriptObject implements Initializable, Ma
             String dateIn = allJob.getPubDate();
             LocalDate jobPubDate = LocalDate.parse(dateIn, formatter);
 
-            if (searchByDate.getValue() != null) {
+            if (searchByDate.getValue() != null && distanceFromComboBox.getValue() != null) {
+                if (allJob.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate)) && jDistance < value) {
+                    addMarker(allJob);
+                }
+            } else if (searchByDate.getValue() != null) {
                 if (allJob.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate))) {
                     addMarker(allJob);
                 }
@@ -237,6 +263,131 @@ public class mapController extends JavascriptObject implements Initializable, Ma
         createMarkers(markers);
         totalResultsLabel.setText("Showing " + markers.size() + " On Map");
     }
+
+    @FXML
+    void filterByLocation(ActionEvent event) throws SQLException {
+        try {
+            markers.clear();
+            map.clearMarkers();
+        } catch (Exception e) {
+
+        }
+
+        String distanceSelected = distanceFromComboBox.getValue();
+        value = 0;
+
+        switch (distanceSelected) {
+            case "20 Miles":
+                value = 20;
+                break;
+            case "40 Miles":
+                value = 40;
+                break;
+            case "60 Miles":
+                value = 60;
+            case "100 Miles":
+                value = 100;
+                break;
+            case "150 Miles":
+                value = 150;
+            case "200 Miles":
+                value = 200;
+                break;
+            case "400 Miles":
+                value = 400;
+                break;
+            case "800 Miles":
+                value = 800;
+            case "1000 or more miles":
+                value = 1000;
+                break;
+        }
+
+
+        String enteredLocation = locationEntry.getText();
+        String lat = "";
+        String lng = "";
+
+        String jobLat = "";
+        String jobLng = "";
+
+        if (!enteredLocation.equals("")) {
+
+            for (GeoCodeModel code : geoCodes) {
+
+                String location = enteredLocation;
+                location = location.replace(" ", "");
+
+                if (location.contains("|")) {
+                    location = location.substring(0, location.indexOf("|"));
+                }
+                if (location.toLowerCase().contains(code.getCity().toLowerCase())) {
+                    lat = code.getLat();
+                    lng = code.getLng();
+                    System.out.println("contains");
+                    break;
+                }
+            }
+
+            //System.out.println(enteredLocation);
+
+            if (lat.equals("") && lng.equals("")) {
+                location.geoCode(enteredLocation);
+                lat = location.getLattitude();
+                lng = location.getLongitude();
+                dbFunc.addJobLatLng(enteredLocation, lat, lng);
+            }
+
+
+            for (AllJobsModel job : allJobs) {
+                for (GeoCodeModel code : geoCodes) {
+
+                    String location = job.getJobLocation();
+                    location = location.replace(" ", "");
+
+                    if (location.contains("|")) {
+                        location = location.substring(0, location.indexOf("|"));
+                    }
+                    if (location.contains(code.getCity())) {
+                        jobLat = code.getLat();
+                        jobLng = code.getLng();
+                        //System.out.println("Job Lat: " + jobLat + "Job Lng: " + jobLng);
+                        break;
+                    }
+                }
+
+                double jLat = Double.parseDouble(jobLat);
+                double jLng = Double.parseDouble(jobLng);
+
+                double eLat = Double.parseDouble(lat);
+                double eLng = Double.parseDouble(lng);
+
+                //System.out.println("Job Lat: " + jLat + "Job: Lng " + jLng + "Entry Lat: " + eLat + "Entry Long: " + eLng);
+
+                jDistance = calcDistance(jLat, jLng, eLat, eLng);
+                String dateIn = job.getPubDate();
+                LocalDate jobPubDate = LocalDate.parse(dateIn, formatter);
+
+                if (combo_JobType.getValue() != null && searchByDate.getValue() != null) {
+                    if (job.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate)) && jDistance < value) {
+                        addMarker(job);
+                    }
+                } else if (searchByDate.getValue() != null) {
+                    if (job.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate))) {
+                        addMarker(job);
+                    }
+                } else if (job.getJobTitle().toLowerCase().contains(typeSelected)) {
+                    addMarker(job);
+                }
+            }
+
+        } else {
+            System.out.println("Text empty");
+        }
+        createMarkers(markers);
+        totalResultsLabel.setText("Showing " + markers.size() + " On Map");
+    }
+
 
     //initliaze all fields
     private void loadComponents(MapComponentInitializedListener listener) throws SQLException {
@@ -252,11 +403,14 @@ public class mapController extends JavascriptObject implements Initializable, Ma
                 progressPaneLabel.setText("Loading Filter Components. Please Wait...");
                 loadComboBox_JobType();
                 loadComboBox_DateRange();
+                loadDistanceComboBox();
+
+
                 Collections.sort(jobTypes);
                 combo_JobType.getItems().setAll(jobTypes);
                 searchByDate.getItems().setAll(dates);
-                progressPaneLabel.setText("Loading Map view. Please Wait...");
 
+                progressPaneLabel.setText("Loading Map view. Please Wait...");
                 return null;
             }
         };
@@ -266,7 +420,6 @@ public class mapController extends JavascriptObject implements Initializable, Ma
             progressIndicator.progressProperty().unbind();
             progressIndicator.setProgress(100);
             progressPane.setVisible(false);
-
 
         });
         progressIndicator.progressProperty().bind(task.progressProperty());
@@ -345,6 +498,25 @@ public class mapController extends JavascriptObject implements Initializable, Ma
         dates.add("Last 360 Days");
 
         convertDate();
+    }
+
+    private void loadDistanceComboBox() {
+
+
+        distances.add("");
+        distances.add("20 Miles");
+        distances.add("40 Miles");
+        distances.add("60 Miles");
+        distances.add("100 Miles");
+        distances.add("150 Miles");
+        distances.add("200 Miles");
+        distances.add("400 Miles");
+        distances.add("800 Miles");
+        distances.add("1000 or more miles");
+
+        distanceFromComboBox.getItems().setAll(distances);
+
+
     }
 
 
@@ -575,7 +747,27 @@ public class mapController extends JavascriptObject implements Initializable, Ma
         }
     }
 
+    //https://www.geeksforgeeks.org/program-distance-two-points-earth/
+    private Double calcDistance(Double jobLat, Double jobLng, Double locationLat, Double locationLng) {
+        jobLat = Math.toRadians(jobLat);
+        jobLng = Math.toRadians(jobLng);
+
+        locationLat = Math.toRadians(locationLat);
+        locationLng = Math.toRadians(locationLng);
+
+        double distLng = locationLng - jobLng;
+        double distLat = locationLat - jobLat;
+
+        double ans = Math.pow(Math.sin(distLat / 2), 2) + Math.cos(jobLat) * Math.cos(locationLat) * Math.pow(Math.sin(distLng / 2), 2);
+
+        double c = 2 * Math.asin(Math.sqrt(ans));
+
+        double r = 3956;
+
+        return (c * r);
+    }
 }
+
 
 
 

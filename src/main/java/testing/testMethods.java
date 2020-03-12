@@ -1,9 +1,11 @@
 package testing;
 
 import connectionRequests.GithubJSONRequest;
+import dataTypes.GeoCodeModel;
 import dbHandler.DBFunctions;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class testMethods {
 
@@ -127,5 +129,16 @@ public class testMethods {
 
         }
         return valid;
+    }
+
+    public int checkGeoCodes() throws SQLException {
+        int notNull = 0;
+        ArrayList<GeoCodeModel> geoCodes = dbFunc.getGeoCodes();
+        for (int i = 0; i < 30; i++) {
+            if (geoCodes.get(i).getLng() != null && geoCodes.get(i).getLat() != null) {
+                notNull = 1;
+            }
+        }
+        return notNull;
     }
 }

@@ -2,11 +2,12 @@
 
 import org.junit.Assert;
 import org.junit.Test;
-import runner.runtimeHandler;
 import testing.testMethods;
 
-import javax.swing.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -179,6 +180,16 @@ public class APItests {
             System.out.println("Primary key column 'id' does not contain a null value. Test Passed!");
         } catch (AssertionError e) {
             Assert.fail("Primary key column 'id' contains a null value. Test Failed");
+        }
+    }
+
+    @Test
+    public void geoCodesCheck() {
+        try {
+            int check = test.checkGeoCodes();
+            Assert.assertEquals(1, check);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

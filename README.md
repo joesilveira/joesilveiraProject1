@@ -3,40 +3,27 @@
 
 To run the program, simply run "main"
 
-To Change the API url:
-Navigate to runtimeHandler Class and change the "api" variable
+This project allows us to ping the github jobs api and stack overflow jobs api and write the jobs to a databse.
 
-<h1>Project 1 of Senior Design and Development</h1>
+The UI allows for the user to make all of the requests, view the jobs in a disaply format, and view all of the jobs on the map.
+
+To fetch all of the jobs: In the UI click "Tasks" and click "Run all tasks"
+
+To see the jobs in the database press "View Table" and press "next" to go through each job
+
+To see the jobs on the map press the "search" button and apply your filters.
 
 
-//Depricated in project 2<br>
-This project allows for the program to ping the "jobs.github.com" API and return all of the jobs listed in on the api.
-The program compiles the list of job "Titles" and prints them out to a file the user specifies.
+The filters need some work for multi-filtering but they will work individually.
 
-<h1>Project 2 of Senior Design and Development</h1>
-This version allows the user to ping the "jobs.github.com" API and return all of the jobs titles listed. The program then
-compiles the list of job titles and adds them to an sqlite database "APIDB".
+The search by type and search by job age will work together.
 
-<h2>Program Structure:</h2>
+The search by location option works best by itself but will work with the job type filter
 
-The main class contains the main method to run the program.<br>
-The main method calls "startProgram" from the "runtimeHandler" class<br>
+The project includes tests to test databse functions and geocoding.
 
-The runtimeHandler class method "startProgram" does the following:
-<pre>1. Displays a welcome message.
+The project could use some cleaning up.. commenting methods, formatting large methods, removing un-used variables
+etc. but given the time frame it works!
 
-2. Initializes a progress bar and frame from the "mainScreen" class method.
 
-3. Initliazes the APIDB database from the databseHandler class method "initJobsTitleTable"
 
-    3.1 The "initJobsTitleTable" method calls the "createTable" method from the DBFunctions class
-        and then creates the table "Job_Titles" adds the column "job_title" in the APIDB database.
-        
-            3.1.1: The "createTable" method calls the "connecttoDatabase" method from the "DatabaseConnection" Class
-                   the "createTable" method is a generic method to create any table the database given a tableName and 
-                   and sql statement.
-                                    
-4. Makes the API request from the method "pingAPI" method until there are less than 50 jobs on the page
-
-5. Adds the Job Titles to the database 
-</pre>
