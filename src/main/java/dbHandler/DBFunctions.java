@@ -266,6 +266,7 @@ public class DBFunctions {
                 job.setGuid(rs.getString("guid"));
                 job.setLocation(rs.getString("location"));
                 job.setLink(rs.getString("link"));
+                job.setPubDate(rs.getString("pubDate"));
                 stackJobs.add(job);
             }
 

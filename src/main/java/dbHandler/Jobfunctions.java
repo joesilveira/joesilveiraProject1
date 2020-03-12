@@ -74,14 +74,14 @@ public class Jobfunctions {
         for (GithubModel gJob : gitHubJobs) {
             AllJobsModel job = new AllJobsModel(gJob.getTitle(), gJob.getType(), gJob.getCompany(),
                     gJob.getLocation(), gJob.getCompany_url(), gJob.getDescription(),
-                    gJob.getHow_to_apply());
+                    gJob.getHow_to_apply(), gJob.getCreated_at());
             allJobs.add(job);
         }
 
         //Add stack over flow jobs to array
         for (StackOverFlowModel stackJob : stackJobs) {
             AllJobsModel job = new AllJobsModel(stackJob.getTitle(), stackJob.getCategory(), stackJob.getName(), stackJob.getLocation(),
-                    stackJob.getLink(), stackJob.getDescription(), "Apply Online");
+                    stackJob.getLink(), stackJob.getDescription(), "Apply Online", stackJob.getPubDate());
             allJobs.add(job);
         }
 
@@ -102,9 +102,11 @@ public class Jobfunctions {
 
                     if (dbFunc.checkLocationExistsInDB(location, "geocodes")) {
                         System.out.println("Exists");
+                    } else {
+                        System.out.println("Request made");
+                        geoCoding.geoCode(location);
+                        dbFunc.addJobLatLng(location, geoCoding.getLattitude(), geoCoding.getLongitude());
                     }
-                    // geoCoding.geoCode(location);
-                    // dbFunc.addJobLatLng(location, geoCoding.getLattitude(), geoCoding.getLongitude());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -132,14 +134,14 @@ public class Jobfunctions {
         for (GithubModel gJob : gitHubJobs) {
             AllJobsModel job = new AllJobsModel(gJob.getTitle(), gJob.getType(), gJob.getCompany(),
                     gJob.getLocation(), gJob.getCompany_url(), gJob.getDescription(),
-                    gJob.getHow_to_apply());
+                    gJob.getHow_to_apply(), gJob.getCreated_at());
             allJobs.add(job);
         }
 
         //Add stack over flow jobs to array
         for (StackOverFlowModel stackJob : stackJobs) {
             AllJobsModel job = new AllJobsModel(stackJob.getTitle(), stackJob.getCategory(), stackJob.getName(), stackJob.getLocation(),
-                    stackJob.getLink(), stackJob.getDescription(), "Apply Online");
+                    stackJob.getLink(), stackJob.getDescription(), "Apply Online", stackJob.getPubDate());
             allJobs.add(job);
         }
         return this.allJobs;
@@ -158,14 +160,15 @@ public class Jobfunctions {
         for (GithubModel gJob : gitHubJobs) {
             AllJobsModel job = new AllJobsModel(gJob.getTitle(), gJob.getType(), gJob.getCompany(),
                     gJob.getLocation(), gJob.getCompany_url(), gJob.getDescription(),
-                    gJob.getHow_to_apply());
+                    gJob.getHow_to_apply(), gJob.getCreated_at());
             allJobs.add(job);
         }
 
         //Add stack over flow jobs to array
         for (StackOverFlowModel stackJob : stackJobs) {
             AllJobsModel job = new AllJobsModel(stackJob.getTitle(), stackJob.getCategory(), stackJob.getName(), stackJob.getLocation(),
-                    stackJob.getLink(), stackJob.getDescription(), "Apply Online");
+                    stackJob.getLink(), stackJob.getDescription(), "Apply Online", stackJob.getPubDate());
+            System.out.println(stackJob.getPubDate());
             allJobs.add(job);
         }
     }

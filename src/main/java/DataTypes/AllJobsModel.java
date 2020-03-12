@@ -9,8 +9,23 @@ public class AllJobsModel implements Comparable<AllJobsModel> {
     String jobURL;
     String jobDescription;
     String howToApply;
+    String id;
 
-    public AllJobsModel(String jobTitle, String jobType, String jobCompany, String jobLocation, String jobURL, String jobDescription, String howToApply) {
+    public String getPubDate() {
+        return pubDate;
+    }
+
+    public void setPubDate(String pubDate) {
+        this.pubDate = pubDate;
+    }
+
+    String pubDate;
+
+    public String getId() {
+        return id;
+    }
+
+    public AllJobsModel(String jobTitle, String jobType, String jobCompany, String jobLocation, String jobURL, String jobDescription, String howToApply, String pubDate) {
         this.jobTitle = jobTitle;
         this.jobType = jobType;
         this.jobCompany = jobCompany;
@@ -18,6 +33,7 @@ public class AllJobsModel implements Comparable<AllJobsModel> {
         this.jobURL = jobURL;
         this.jobDescription = jobDescription;
         this.howToApply = howToApply;
+        this.pubDate = pubDate;
     }
 
     public String getJobTitle() {
@@ -76,6 +92,12 @@ public class AllJobsModel implements Comparable<AllJobsModel> {
         this.howToApply = howToApply;
     }
 
+    @Override
+    public String toString() {
+        return "Job:" +
+                "jobTitle='" + jobTitle + '\'' +
+                ", jobType='" + jobType;
+    }
 
     @Override
     public int compareTo(AllJobsModel otherJob) {
