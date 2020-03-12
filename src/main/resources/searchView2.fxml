@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import com.lynden.gmapsfx.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="mapView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="710.0" prefWidth="1022.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.mapController">
+    <children>
+        <GoogleMapView fx:id="gMap" layoutX="103.0" layoutY="197.0" prefHeight="499.0" prefWidth="817.0"
+                       style="-fx-border-color: green; -fx-border-width: 2px;" visible="false"/>
+        <ComboBox fx:id="distanceFromComboBox" editable="true" layoutX="419.0" layoutY="127.0"
+                  onAction="#filterByLocation" prefHeight="41.0" prefWidth="177.0" promptText="Distance"/>
+        <ComboBox fx:id="combo_JobType" editable="true" layoutX="103.0" layoutY="52.0" onAction="#filterByType"
+                  prefHeight="41.0" prefWidth="286.0" promptText="Filter by Job Type"/>
+        <ComboBox fx:id="searchByDate" editable="true" layoutX="564.0" layoutY="52.0" onAction="#filterByDate"
+                  prefHeight="41.0" prefWidth="286.0" promptText="Filter By Date"/>
+        <Label fx:id="totalResultsLabel" layoutX="707.0" layoutY="127.0" prefHeight="41.0" prefWidth="255.0"
+               text="Label">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Label>
+        <AnchorPane fx:id="progressPane" layoutX="261.0" layoutY="269.0" prefHeight="172.0" prefWidth="500.0"
+                    style="-fx-border-color: blue; -fx-border-width: 2px;">
+            <children>
+                <ProgressIndicator fx:id="progressIndicator" layoutX="181.0" layoutY="71.0" prefHeight="79.0"
+                                   prefWidth="138.0" progress="0.0"/>
+                <Text fx:id="progressPaneLabel" layoutX="81.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Loading Jobs and Geo Codes Please Wait..." wrappingWidth="338.6708984375">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Text>
+            </children>
+        </AnchorPane>
+        <TextField fx:id="locationEntry" layoutX="103.0" layoutY="132.0" prefHeight="41.0" prefWidth="286.0"/>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
+</AnchorPane>

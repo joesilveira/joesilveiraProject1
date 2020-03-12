@@ -119,7 +119,7 @@ public class HomeController implements Initializable {
     @FXML
     void searchPressed(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/searchView.fxml"));
+        fxmlLoader.setLocation(getClass().getResource("/searchView2.fxml"));
         AnchorPane mapScene = fxmlLoader.load();
         scenePane.getChildren().setAll(mapScene);
         Stage stage = (Stage) search_button.getScene().getWindow();
