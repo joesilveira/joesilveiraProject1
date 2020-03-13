@@ -16,16 +16,16 @@ To see the jobs in the database press "View Table" and press "next" to go throug
 To see the jobs on the map press the "search" button and apply your filters.
 
 
-The filters need some work for multi-filtering but they will work individually.
+Apply anyone of the filters and see the jobs on the map.
 
-The search by type and search by job age will work together.
+Filter by Job type
+Filter by Job posting age
+Filter by location distance
 
-The search by location option works best by itself but will work with the job type filter
+You can apply all three filters at once
 
-The project includes tests to test databse functions and geocoding.
-
-The project could use some cleaning up.. commenting methods, formatting large methods, removing un-used variables
-etc. but given the time frame it works!
+To filter by location please enter in a location in the format city,state or just city
+and then select a radius
 
 
 

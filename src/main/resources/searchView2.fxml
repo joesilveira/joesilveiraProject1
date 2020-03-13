@@ -4,7 +4,6 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import com.lynden.gmapsfx.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane fx:id="mapView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
@@ -19,8 +18,7 @@
                   prefHeight="41.0" prefWidth="286.0" promptText="Filter by Job Type"/>
         <ComboBox fx:id="searchByDate" editable="true" layoutX="453.0" layoutY="52.0" onAction="#filterByDate"
                   prefHeight="41.0" prefWidth="286.0" promptText="Filter By Date"/>
-        <Label fx:id="totalResultsLabel" layoutX="707.0" layoutY="127.0" prefHeight="41.0" prefWidth="255.0"
-               text="Label">
+        <Label fx:id="totalResultsLabel" layoutX="707.0" layoutY="127.0" prefHeight="41.0" prefWidth="255.0">
             <font>
                 <Font size="18.0"/>
             </font>
@@ -38,7 +36,8 @@
                 </Text>
             </children>
         </AnchorPane>
-        <TextField fx:id="locationEntry" layoutX="103.0" layoutY="132.0" prefHeight="41.0" prefWidth="286.0"/>
+        <TextField fx:id="locationEntry" layoutX="103.0" layoutY="132.0" prefHeight="41.0" prefWidth="286.0"
+                   promptText="Enter City,State"/>
         <Button fx:id="applyFiltersbutton" layoutX="812.0" layoutY="48.0" mnemonicParsing="false"
                 onAction="#applyFilters" prefHeight="50.0" prefWidth="163.0" text="Apply Filters"/>
     </children>
