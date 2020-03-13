@@ -6,7 +6,6 @@ import com.lynden.gmapsfx.javascript.JavascriptObject;
 import com.lynden.gmapsfx.javascript.event.UIEventHandler;
 import com.lynden.gmapsfx.javascript.event.UIEventType;
 import com.lynden.gmapsfx.javascript.object.*;
-import com.lynden.gmapsfx.service.geocoding.GeocodingService;
 import com.lynden.gmapsfx.service.geocoding.GeocodingServiceCallback;
 import connectionRequests.GeoCoding;
 import dataTypes.AllJobsModel;
@@ -17,15 +16,10 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import netscape.javascript.JSObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
@@ -39,37 +33,37 @@ import java.util.*;
 
 public class mapController extends JavascriptObject implements Initializable, MapComponentInitializedListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GeocodingService.class);
 
-    public GeocodingServiceCallback callback;
+    //Anchor Panes
+    @FXML
+    private AnchorPane progressPane;
 
     @FXML
     private AnchorPane mapView;
 
-    @FXML
-    private ComboBox<String> searchByDate;
-
+    //Combo Boxes
     @FXML
     private ComboBox<String> combo_JobType;
-
-
-    @FXML
-    private Label totalResultsLabel;
-
-    @FXML
-    private ComboBox<String> titleSearch;
 
     @FXML
     private ComboBox<String> distanceFromComboBox;
 
     @FXML
-    private GoogleMapView gMap;
+    private ComboBox<String> locationSearch;
 
     @FXML
-    private ComboBox<String> locationSearch;
+    private ComboBox<String> searchByDate;
+
+    public GeocodingServiceCallback callback;
+
+    //Map stuff
+    @FXML
+    private GoogleMapView gMap;
+
 
     private GoogleMap map;
 
+    //Other stuff
     @FXML
     private ProgressIndicator progressIndicator;
 
@@ -77,50 +71,53 @@ public class mapController extends JavascriptObject implements Initializable, Ma
     private Text progressPaneLabel;
 
     @FXML
-    private AnchorPane progressPane;
+    private Label totalResultsLabel;
 
+    @FXML
+    private TextField locationEntry;
+
+    @FXML
+    private Button applyFiltersbutton;
+
+    //User Variables
+    int value;
+    double jDistance;
+    String geoCode = "http://www.mapquestapi.com/geocoding/v1/address?key=xGA2gfYEJmplL7GrATFYpONUR1dGkPxx&location=1600+Pennsylvania+Ave+NW,Washington,DC,20500";
+
+    //Class Variables
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
+    LocalDate today = LocalDate.parse(LocalDate.now().toString());
+    Period daysBefore;
+    String jobTypeSelected;
+    String distanceSelected;
+    LocalDate userEndDate;
+    String entryLat;
+    String entryLng;
 
     ArrayList<String> jobTypes = new ArrayList<>();
     Map<String, Integer> hashMap = new HashMap<>();
     Map<String, List<String>> n = new HashMap<>();
-
-    //Arrays for job locations
-
-    @FXML
-    private TextField locationEntry;
 
     ArrayList<GeoCodeModel> geoCodes = new ArrayList<>();
     ArrayList<AllJobsModel> allJobs = new ArrayList<>();
     ArrayList<Marker> markers = new ArrayList<>();
     ArrayList<String> dates = new ArrayList<>();
     ArrayList<String> distances = new ArrayList<>();
-    LocalDate endDate;
-    String typeSelected;
-    Period daysBefore = Period.ofDays(0);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
-    LocalDate today = LocalDate.parse(LocalDate.now().toString());
+
+    //Class instances
     private DBFunctions dbFunc = new DBFunctions();
-    Jobfunctions jobFun = new Jobfunctions();
-    private GeoCoding location = new GeoCoding();
-    String geoCode = "http://www.mapquestapi.com/geocoding/v1/address?key=xGA2gfYEJmplL7GrATFYpONUR1dGkPxx&location=1600+Pennsylvania+Ave+NW,Washington,DC,20500";
+    private Jobfunctions jobFun = new Jobfunctions();
+    private GeoCoding geoLocation = new GeoCoding();
     private UIEventHandler EventHandler;
     private Object MouseEvent;
-    int value;
-    double jDistance;
-
-    public mapController() {
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //populateSearchBox();
-        System.out.println("loading Geo Codes");
         try {
             loadComponents(this);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -153,21 +150,18 @@ public class mapController extends JavascriptObject implements Initializable, Ma
     }
 
 
+    //Return end date
     @FXML
     void filterByDate(ActionEvent event) throws ParseException {
-        try {
-            markers.clear();
-            map.clearMarkers();
-        } catch (Exception ignored) {
-
-        }
 
         String getSelected = searchByDate.getValue();
+        System.out.println(getSelected);
+
 
         if (!getSelected.equals("")) {
 
+            //set end date variable based on user choice
             switch (getSelected) {
-
                 case "Last 3 Days":
                     daysBefore = Period.ofDays(3);
                     break;
@@ -196,196 +190,85 @@ public class mapController extends JavascriptObject implements Initializable, Ma
                     daysBefore = Period.ofDays(360);
                     break;
             }
-
-            endDate = today.minus(daysBefore);
+            userEndDate = today.minus(daysBefore);
+        } else {
+            userEndDate = null;
         }
-
-        typeSelected = typeSelected.toLowerCase();
-
-        for (AllJobsModel allJob : allJobs) {
-
-            String dateIn = allJob.getPubDate();
-            LocalDate jobPubDate = LocalDate.parse(dateIn, formatter);
-
-            if (combo_JobType.getValue() != null && distanceFromComboBox.getValue() != null) {
-                if (allJob.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate)) && jDistance < value) {
-                    addMarker(allJob);
-                }
-            } else if (combo_JobType.getValue() != null) {
-                if (allJob.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate))) {
-                    addMarker(allJob);
-                }
-            } else if (jobPubDate.isAfter(endDate)) {
-                addMarker(allJob);
-            }
-
-        }
-
-        createMarkers(markers);
-        totalResultsLabel.setText("Showing " + markers.size() + " On Map");
     }
 
-    @FXML
-    void getLocationEntry(ActionEvent event) {
-
-    }
-
-
+    //Return Type selected
     @FXML
     void filterByType(ActionEvent event) {
-        try {
-            markers.clear();
-            map.clearMarkers();
-        } catch (Exception ignored) {
+
+        String type = "";
+        type = combo_JobType.getValue();
+
+        if (!type.equals("")) {
+            jobTypeSelected = type;
+            jobTypeSelected = jobTypeSelected.toLowerCase();
+        } else {
+            jobTypeSelected = null;
         }
 
-        typeSelected = combo_JobType.getValue();
-        typeSelected = typeSelected.toLowerCase();
 
-        for (AllJobsModel allJob : allJobs) {
-            String dateIn = allJob.getPubDate();
-            LocalDate jobPubDate = LocalDate.parse(dateIn, formatter);
+    }
 
-            if (searchByDate.getValue() != null && distanceFromComboBox.getValue() != null) {
-                if (allJob.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate)) && jDistance < value) {
-                    addMarker(allJob);
-                }
-            } else if (searchByDate.getValue() != null) {
-                if (allJob.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate))) {
-                    addMarker(allJob);
-                }
-            } else if (allJob.getJobTitle().toLowerCase().contains(typeSelected)) {
-                addMarker(allJob);
+    //Return distance selected
+    @FXML
+    void filterByLocation(ActionEvent event) throws SQLException {
+
+        distanceSelected = distanceFromComboBox.getValue();
+        String userEntry = locationEntry.getText();
+
+        if (userEntry.equals("")) {
+            userEntry = null;
+        }
+
+        if (distanceSelected.equals("")) {
+            distanceSelected = null;
+            entryLng = null;
+            entryLat = null;
+        }
+
+        if (distanceSelected != null && userEntry != null) {
+            value = 0;
+            switch (distanceSelected) {
+
+                case "20 Miles":
+                    value = 20;
+                    break;
+                case "40 Miles":
+                    value = 40;
+                    break;
+                case "60 Miles":
+                    value = 60;
+                    break;
+                case "100 Miles":
+                    value = 100;
+                    break;
+                case "150 Miles":
+                    value = 150;
+                    break;
+                case "200 Miles":
+                    value = 200;
+                    break;
+                case "400 Miles":
+                    value = 400;
+                    break;
+                case "800 Miles":
+                    value = 800;
+                    break;
+                case "1000 or more miles":
+                    value = 1000;
+                    break;
             }
-
+            setEnteredLocationLatLong(userEntry);
         }
-
-        createMarkers(markers);
-        totalResultsLabel.setText("Showing " + markers.size() + " On Map");
     }
 
     @FXML
-    void filterByLocation(ActionEvent event) throws SQLException {
-        try {
-            markers.clear();
-            map.clearMarkers();
-        } catch (Exception e) {
-
-        }
-
-        String distanceSelected = distanceFromComboBox.getValue();
-        value = 0;
-
-        switch (distanceSelected) {
-            case "20 Miles":
-                value = 20;
-                break;
-            case "40 Miles":
-                value = 40;
-                break;
-            case "60 Miles":
-                value = 60;
-            case "100 Miles":
-                value = 100;
-                break;
-            case "150 Miles":
-                value = 150;
-            case "200 Miles":
-                value = 200;
-                break;
-            case "400 Miles":
-                value = 400;
-                break;
-            case "800 Miles":
-                value = 800;
-            case "1000 or more miles":
-                value = 1000;
-                break;
-        }
-
-
-        String enteredLocation = locationEntry.getText();
-        String lat = "";
-        String lng = "";
-
-        String jobLat = "";
-        String jobLng = "";
-
-        if (!enteredLocation.equals("")) {
-
-            for (GeoCodeModel code : geoCodes) {
-
-                String location = enteredLocation;
-                location = location.replace(" ", "");
-
-                if (location.contains("|")) {
-                    location = location.substring(0, location.indexOf("|"));
-                }
-                if (location.toLowerCase().contains(code.getCity().toLowerCase())) {
-                    lat = code.getLat();
-                    lng = code.getLng();
-                    System.out.println("contains");
-                    break;
-                }
-            }
-
-            //System.out.println(enteredLocation);
-
-            if (lat.equals("") && lng.equals("")) {
-                location.geoCode(enteredLocation);
-                lat = location.getLattitude();
-                lng = location.getLongitude();
-                dbFunc.addJobLatLng(enteredLocation, lat, lng);
-            }
-
-
-            for (AllJobsModel job : allJobs) {
-                for (GeoCodeModel code : geoCodes) {
-
-                    String location = job.getJobLocation();
-                    location = location.replace(" ", "");
-
-                    if (location.contains("|")) {
-                        location = location.substring(0, location.indexOf("|"));
-                    }
-                    if (location.contains(code.getCity())) {
-                        jobLat = code.getLat();
-                        jobLng = code.getLng();
-                        //System.out.println("Job Lat: " + jobLat + "Job Lng: " + jobLng);
-                        break;
-                    }
-                }
-
-                double jLat = Double.parseDouble(jobLat);
-                double jLng = Double.parseDouble(jobLng);
-
-                double eLat = Double.parseDouble(lat);
-                double eLng = Double.parseDouble(lng);
-
-                //System.out.println("Job Lat: " + jLat + "Job: Lng " + jLng + "Entry Lat: " + eLat + "Entry Long: " + eLng);
-
-                jDistance = calcDistance(jLat, jLng, eLat, eLng);
-                String dateIn = job.getPubDate();
-                LocalDate jobPubDate = LocalDate.parse(dateIn, formatter);
-
-                if (combo_JobType.getValue() != null && searchByDate.getValue() != null) {
-                    if (job.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate)) && jDistance < value) {
-                        addMarker(job);
-                    }
-                } else if (searchByDate.getValue() != null) {
-                    if (job.getJobTitle().toLowerCase().contains(typeSelected) && (jobPubDate.isAfter(endDate))) {
-                        addMarker(job);
-                    }
-                } else if (job.getJobTitle().toLowerCase().contains(typeSelected)) {
-                    addMarker(job);
-                }
-            }
-
-        } else {
-            System.out.println("Text empty");
-        }
-        createMarkers(markers);
-        totalResultsLabel.setText("Showing " + markers.size() + " On Map");
+    void applyFilters(ActionEvent event) throws SQLException {
+        getFilters();
     }
 
 
@@ -398,9 +281,12 @@ public class mapController extends JavascriptObject implements Initializable, Ma
             @Override
             public Void call() throws IOException, XMLStreamException, SQLException {
                 progressPaneLabel.setText("Loading Jobs and GeoCodes From Database. Please Wait...");
+
                 geoCodes = dbFunc.getGeoCodes();
                 allJobs = jobFun.getArrayOfJobs();
+
                 progressPaneLabel.setText("Loading Filter Components. Please Wait...");
+
                 loadComboBox_JobType();
                 loadComboBox_DateRange();
                 loadDistanceComboBox();
@@ -416,7 +302,6 @@ public class mapController extends JavascriptObject implements Initializable, Ma
         };
 
         task.setOnSucceeded(event1 -> {
-            System.out.println("Done");
             progressIndicator.progressProperty().unbind();
             progressIndicator.setProgress(100);
             progressPane.setVisible(false);
@@ -480,9 +365,7 @@ public class mapController extends JavascriptObject implements Initializable, Ma
                 }
             }
         }
-        System.out.println(hashMap.toString());
     }
-
 
     //init the date combo box with fields
     private void loadComboBox_DateRange() {
@@ -501,8 +384,6 @@ public class mapController extends JavascriptObject implements Initializable, Ma
     }
 
     private void loadDistanceComboBox() {
-
-
         distances.add("");
         distances.add("20 Miles");
         distances.add("40 Miles");
@@ -515,7 +396,6 @@ public class mapController extends JavascriptObject implements Initializable, Ma
         distances.add("1000 or more miles");
 
         distanceFromComboBox.getItems().setAll(distances);
-
 
     }
 
@@ -530,7 +410,6 @@ public class mapController extends JavascriptObject implements Initializable, Ma
             map.addUIEventHandler(markers.get(l), UIEventType.click, new UIEventHandler() {
                 @Override
                 public void handle(JSObject obj) {
-                    MarkerOptions markerOptions = new MarkerOptions();
                     try {
                         InfoWindowOptions infoWindowOptions = new InfoWindowOptions();
                         infoWindowOptions.content("<h2>" + allJobs.get(finalI).getJobTitle() + "</h2>" +
@@ -541,11 +420,33 @@ public class mapController extends JavascriptObject implements Initializable, Ma
                         e.printStackTrace();
                     }
                 }
-
             });
         }
     }
 
+    //Method to add a marker to the array of markers
+    private void addMarker(AllJobsModel job) {
+        for (GeoCodeModel code : geoCodes) {
+
+            String location = job.getJobLocation();
+            location = location.replace(" ", "");
+
+            if (location.contains("|")) {
+                location = location.substring(0, location.indexOf("|"));
+            }
+            if (location.contains(code.getCity())) {
+
+                LatLong geo = new LatLong(Double.parseDouble(code.getLat()), Double.parseDouble(code.getLng()));
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(geo);
+                markerOptions.title(job.getJobTitle());
+                markerOptions.label(job.getJobTitle());
+                Marker marker = new Marker(markerOptions);
+                markers.add(marker);
+                break;
+            }
+        }
+    }
 
     //method to convert job dates to a dd-mm-yyyy string format
     private void convertDate() {
@@ -724,29 +625,7 @@ public class mapController extends JavascriptObject implements Initializable, Ma
         }
     }
 
-    private void addMarker(AllJobsModel job) {
-        for (GeoCodeModel code : geoCodes) {
-
-            String location = job.getJobLocation();
-            location = location.replace(" ", "");
-
-            if (location.contains("|")) {
-                location = location.substring(0, location.indexOf("|"));
-            }
-            if (location.contains(code.getCity())) {
-
-                LatLong geo = new LatLong(Double.parseDouble(code.getLat()), Double.parseDouble(code.getLng()));
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(geo);
-                markerOptions.title(job.getJobTitle());
-                markerOptions.label(job.getJobTitle());
-                Marker marker = new Marker(markerOptions);
-                markers.add(marker);
-                break;
-            }
-        }
-    }
-
+    //Method to calculate the distance between two latlongs
     //https://www.geeksforgeeks.org/program-distance-two-points-earth/
     private Double calcDistance(Double jobLat, Double jobLng, Double locationLat, Double locationLng) {
         jobLat = Math.toRadians(jobLat);
@@ -766,7 +645,155 @@ public class mapController extends JavascriptObject implements Initializable, Ma
 
         return (c * r);
     }
+
+    //Method get filter data
+    private void getFilters() throws SQLException {
+
+        try {
+            markers.clear();
+            map.clearMarkers();
+        } catch (Exception ignored) {
+
+        }
+
+        //All Filters Applied
+        if (jobTypeSelected != null && userEndDate != null && entryLat != null && entryLng != null) {
+            for (AllJobsModel Job : allJobs) {
+                String dateIn = Job.getPubDate();
+                LocalDate jDate = LocalDate.parse(dateIn, formatter);
+                getJobParam(Job);
+                if (Job.getJobTitle().toLowerCase().contains(jobTypeSelected) && jDate.isAfter(userEndDate) && jDistance < value) {
+                    addMarker(Job);
+                }
+            }
+            createMarkers(markers);
+
+            //Job Type and Job Age Applied
+        } else if (jobTypeSelected != null && userEndDate != null) {
+            for (AllJobsModel Job : allJobs) {
+                String dateIn = Job.getPubDate();
+                LocalDate jDate = LocalDate.parse(dateIn, formatter);
+                if (Job.getJobTitle().toLowerCase().contains(jobTypeSelected) && jDate.isAfter(userEndDate)) {
+                    addMarker(Job);
+                }
+            }
+            createMarkers(markers);
+
+            //Job Type and distance applied
+        } else if (jobTypeSelected != null && entryLat != null && entryLng != null) {
+            for (AllJobsModel Job : allJobs) {
+                getJobParam(Job);
+                if (Job.getJobTitle().toLowerCase().contains(jobTypeSelected) && jDistance < value) {
+                    addMarker(Job);
+                }
+            }
+            createMarkers(markers);
+
+            //Job Age and distance applied
+        } else if (userEndDate != null && entryLat != null && entryLng != null) {
+            for (AllJobsModel Job : allJobs) {
+                String dateIn = Job.getPubDate();
+                LocalDate jDate = LocalDate.parse(dateIn, formatter);
+                getJobParam(Job);
+                if (jDate.isAfter(userEndDate) && jDistance < value) {
+                    addMarker(Job);
+                }
+            }
+            createMarkers(markers);
+
+
+            //Just Type applied
+        } else if (jobTypeSelected != null) {
+            for (AllJobsModel Job : allJobs) {
+                if (Job.getJobTitle().toLowerCase().contains(jobTypeSelected)) {
+                    addMarker(Job);
+                }
+            }
+            createMarkers(markers);
+
+            //Just job age applied
+        } else if (userEndDate != null) {
+            for (AllJobsModel Job : allJobs) {
+                String dateIn = Job.getPubDate();
+                LocalDate jDate = LocalDate.parse(dateIn, formatter);
+                if (jDate.isAfter(userEndDate)) {
+                    addMarker(Job);
+                }
+            }
+            createMarkers(markers);
+
+            //Just distance applied
+        } else if (entryLat != null && entryLng != null) {
+            System.out.println("distance applied");
+            System.out.println(entryLat + entryLng);
+            for (AllJobsModel Job : allJobs) {
+                getJobParam(Job);
+                if (jDistance < value) {
+                    addMarker(Job);
+                }
+            }
+            createMarkers(markers);
+        }
+
+        totalResultsLabel.setText("Showing " + markers.size() + " On Map");
+    }
+
+    private void setEnteredLocationLatLong(String enteredLocation) throws SQLException {
+        String location = enteredLocation;
+        location = location.replace(" ", "");
+
+        if (location.contains("|")) {
+            location = location.substring(0, location.indexOf("|"));
+        }
+        //Loop through geo codes and try to find the user location entered
+        for (GeoCodeModel code : geoCodes) {
+            if (location.toLowerCase().contains(code.getCity().toLowerCase())) {
+                entryLat = code.getLat();
+                entryLng = code.getLng();
+                break;
+            }
+        }
+
+        //If user location is not in database, make the api request to get the lat lng and add it to db
+        if (entryLat.equals("") && entryLng.equals("")) {
+            geoLocation.geoCode(enteredLocation);
+            entryLat = geoLocation.getLattitude();
+            entryLng = geoLocation.getLongitude();
+            dbFunc.addJobLatLng(enteredLocation, entryLat, entryLng);
+        }
+    }
+
+    private void getJobParam(AllJobsModel Job) {
+
+        String jLat = "";
+        String jLng = "";
+        String location = Job.getJobLocation();
+        location = location.replace(" ", "");
+
+        if (location.contains("|")) {
+            location = location.substring(0, location.indexOf("|"));
+        }
+
+        for (GeoCodeModel geo : geoCodes) {
+            if (geo.getCity().toLowerCase().contains(location.toLowerCase())) {
+                jLat = geo.getLat();
+                jLng = geo.getLng();
+                break;
+            }
+        }
+
+        double jobLat = Double.parseDouble(jLat);
+        double jobLng = Double.parseDouble(jLng);
+
+        double uEntryLat = Double.parseDouble(entryLat);
+        double uEntryLng = Double.parseDouble(entryLng);
+
+        jDistance = calcDistance(jobLat, jobLng, uEntryLat, uEntryLng);
+    }
 }
+
+
+
 
 
 

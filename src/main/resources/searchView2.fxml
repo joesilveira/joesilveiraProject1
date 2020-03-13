@@ -17,7 +17,7 @@
                   onAction="#filterByLocation" prefHeight="41.0" prefWidth="177.0" promptText="Distance"/>
         <ComboBox fx:id="combo_JobType" editable="true" layoutX="103.0" layoutY="52.0" onAction="#filterByType"
                   prefHeight="41.0" prefWidth="286.0" promptText="Filter by Job Type"/>
-        <ComboBox fx:id="searchByDate" editable="true" layoutX="564.0" layoutY="52.0" onAction="#filterByDate"
+        <ComboBox fx:id="searchByDate" editable="true" layoutX="453.0" layoutY="52.0" onAction="#filterByDate"
                   prefHeight="41.0" prefWidth="286.0" promptText="Filter By Date"/>
         <Label fx:id="totalResultsLabel" layoutX="707.0" layoutY="127.0" prefHeight="41.0" prefWidth="255.0"
                text="Label">
@@ -39,6 +39,8 @@
             </children>
         </AnchorPane>
         <TextField fx:id="locationEntry" layoutX="103.0" layoutY="132.0" prefHeight="41.0" prefWidth="286.0"/>
+        <Button fx:id="applyFiltersbutton" layoutX="812.0" layoutY="48.0" mnemonicParsing="false"
+                onAction="#applyFilters" prefHeight="50.0" prefWidth="163.0" text="Apply Filters"/>
     </children>
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
