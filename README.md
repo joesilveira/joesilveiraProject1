@@ -1,6 +1,6 @@
 # Joe Silveira
 
-To run the program....Run from gradle-> application -> "Run"
+To run the program....Run from gradle-> Tasks -> application -> "Run"
 *Required*
 Java 11+
 
@@ -26,6 +26,7 @@ The project includes tests to test databse functions and geocoding.
 
 The project could use some cleaning up.. commenting methods, formatting large methods, removing un-used variables
 etc. but given the time frame it works!
+
 
 
 
